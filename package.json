@@ -1,0 +1,19 @@
+{
+  "name": "four-corner-dashboard",
+  "version": "1.0.0",
+  "description": "Operations and Buyer Intelligence Dashboard for Four Corner",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000"
+  },
+  "keywords": [
+    "real-estate",
+    "dashboard",
+    "analytics",
+    "hyderabad",
+    "four-corner"
+  ],
+  "author": "DND711",
+  "license": "MIT"
+}
