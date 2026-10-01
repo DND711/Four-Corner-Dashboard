@@ -35,7 +35,7 @@ function renderBuyersTable(buyers) {
   if (!buyers || buyers.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" class="py-12 text-center text-slate-500 font-mono text-xs">
+        <td colspan="6" class="py-12 text-center text-slate-400 font-mono text-xs">
           No registered buyers match the selected filters.
         </td>
       </tr>`;
@@ -44,22 +44,22 @@ function renderBuyersTable(buyers) {
 
   tbody.innerHTML = buyers.map(b => {
     const score = b.readiness_score || b.intent_score || 0;
-    let badgeColor = 'bg-slate-800 text-slate-300 border-slate-700';
+    let badgeColor = 'bg-slate-100 text-slate-700 border-slate-200';
     let tierLabel = 'Casual Browser';
     let dotColor = 'bg-slate-400';
 
     if (score >= 80) {
-      badgeColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+      badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
       tierLabel = 'High Intent';
-      dotColor = 'bg-emerald-400';
+      dotColor = 'bg-emerald-500';
     } else if (score >= 60) {
-      badgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+      badgeColor = 'bg-amber-50 text-amber-700 border-amber-200';
       tierLabel = 'Active Evaluator';
-      dotColor = 'bg-amber-400';
+      dotColor = 'bg-amber-500';
     } else if (score >= 40) {
-      badgeColor = 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+      badgeColor = 'bg-blue-50 text-blue-700 border-blue-200';
       tierLabel = 'Active Searcher';
-      dotColor = 'bg-blue-400';
+      dotColor = 'bg-blue-500';
     }
 
     const bd = b.intent_breakdown || {};
@@ -67,29 +67,28 @@ function renderBuyersTable(buyers) {
     const cmm = bd.commute_alignment ? bd.commute_alignment.score : 0;
     const arch = bd.architectural_depth ? bd.architectural_depth.score : 0;
     const leg = bd.legal_due_diligence ? bd.legal_due_diligence.score : 0;
-    const act = bd.commitment_signals ? bd.commitment_signals.score : 0;
 
     // Initials Avatar
     const name = b.name || 'Member';
     const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
 
     return `
-      <tr class="data-row hover:bg-white/5 transition border-b border-white/5 text-xs">
+      <tr class="data-row hover:bg-slate-50 transition border-b border-slate-100 text-xs">
         <!-- Buyer Identity & Contact -->
         <td class="py-3 px-4">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center font-mono font-bold text-white text-[11px] shrink-0">
+            <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-mono font-bold text-slate-700 text-[11px] shrink-0">
               ${initials}
             </div>
             <div>
-              <div class="font-bold text-white flex items-center gap-1.5">
+              <div class="font-bold text-slate-900 flex items-center gap-1.5">
                 <span>${escapeHtml(name)}</span>
                 <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
               </div>
-              <div class="text-[11px] text-slate-400 font-mono">${escapeHtml(b.email || 'No email')}</div>
-              <div class="text-[10px] text-slate-500 font-mono flex items-center gap-2 mt-0.5">
+              <div class="text-[11px] text-slate-500 font-mono">${escapeHtml(b.email || 'No email')}</div>
+              <div class="text-[10px] text-slate-400 font-mono flex items-center gap-2 mt-0.5">
                 <span>${escapeHtml(b.phone || 'No phone')}</span>
-                ${b.phone ? `<button onclick="copyToClipboard('${b.phone}')" class="text-slate-400 hover:text-white cursor-pointer" title="Copy Phone">Copy</button>` : ''}
+                ${b.phone ? `<button onclick="copyToClipboard('${b.phone}')" class="text-slate-500 hover:text-slate-900 font-medium cursor-pointer" title="Copy Phone">Copy</button>` : ''}
               </div>
             </div>
           </div>
@@ -97,11 +96,11 @@ function renderBuyersTable(buyers) {
 
         <!-- Search Criteria -->
         <td class="py-3 px-4 font-mono">
-          <div class="font-medium text-slate-200">${escapeHtml(b.micro_market_pref || 'West Corridor')}</div>
-          <div class="text-[11px] text-slate-400 mt-0.5">
-            Budget: <strong class="text-white">₹${b.budget_max_cr ? b.budget_max_cr + ' Cr' : 'Flexible'}</strong>
+          <div class="font-semibold text-slate-800">${escapeHtml(b.micro_market_pref || 'West Corridor')}</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">
+            Budget: <strong class="text-slate-900">₹${b.budget_max_cr ? b.budget_max_cr + ' Cr' : 'Flexible'}</strong>
           </div>
-          <div class="text-[10px] text-slate-500">${b.bhk_pref ? b.bhk_pref + ' BHK' : 'Any BHK Configuration'}</div>
+          <div class="text-[10px] text-slate-400">${b.bhk_pref ? b.bhk_pref + ' BHK' : 'Any BHK Configuration'}</div>
         </td>
 
         <!-- Readiness Score -->
@@ -111,35 +110,35 @@ function renderBuyersTable(buyers) {
             <span>·</span>
             <span>${tierLabel}</span>
           </div>
-          <div class="w-28 bg-slate-800 rounded-full h-1.5 mt-1.5 overflow-hidden">
-            <div class="${score >= 70 ? 'bg-emerald-400' : score >= 50 ? 'bg-amber-400' : 'bg-blue-400'} h-1.5 rounded-full" style="width: ${score}%"></div>
+          <div class="w-28 bg-slate-100 rounded-full h-1.5 mt-1.5 overflow-hidden">
+            <div class="${score >= 70 ? 'bg-emerald-500' : score >= 50 ? 'bg-amber-500' : 'bg-blue-500'} h-1.5 rounded-full" style="width: ${score}%"></div>
           </div>
         </td>
 
         <!-- Intent Breakdown -->
-        <td class="py-3 px-4 font-mono text-[10px] text-slate-400">
+        <td class="py-3 px-4 font-mono text-[10px] text-slate-500">
           <div class="grid grid-cols-2 gap-x-2 gap-y-0.5">
-            <div>Budget: <span class="text-white font-medium">${fin}/25</span></div>
-            <div>Commute: <span class="text-white font-medium">${cmm}/20</span></div>
-            <div>Carpet: <span class="text-white font-medium">${arch}/20</span></div>
-            <div>RERA: <span class="text-white font-medium">${leg}/15</span></div>
+            <div>Budget: <span class="text-slate-900 font-semibold">${fin}/25</span></div>
+            <div>Commute: <span class="text-slate-900 font-semibold">${cmm}/20</span></div>
+            <div>Carpet: <span class="text-slate-900 font-semibold">${arch}/20</span></div>
+            <div>RERA: <span class="text-slate-900 font-semibold">${leg}/15</span></div>
           </div>
         </td>
 
         <!-- Shortlisted & Inquiries -->
         <td class="py-3 px-4 font-mono text-[11px]">
-          <div class="text-slate-300">
-            <span class="font-bold text-white">${b.saved_units_count || 0}</span> saved units
+          <div class="text-slate-700">
+            <span class="font-bold text-slate-900">${b.saved_units_count || 0}</span> saved units
           </div>
-          <div class="text-slate-400 text-[10px] mt-0.5">
-            <span class="text-amber-400 font-bold">${b.inquiries_count || 0}</span> inquiries
+          <div class="text-slate-500 text-[10px] mt-0.5">
+            <span class="text-amber-600 font-bold">${b.inquiries_count || 0}</span> inquiries
           </div>
         </td>
 
         <!-- Actions -->
         <td class="py-3 px-4 text-right">
           <button onclick="openBuyerModal('${b.id}')"
-            class="px-3 py-1.5 rounded-lg bg-dark-base hover:bg-slate-800 text-slate-200 hover:text-white font-semibold text-xs border border-white/10 transition cursor-pointer">
+            class="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold text-xs border border-slate-200 shadow-sm transition cursor-pointer">
             View Profile
           </button>
         </td>
@@ -184,7 +183,7 @@ function renderInquiries(inquiries) {
 
   if (!inquiries || inquiries.length === 0) {
     container.innerHTML = `
-      <div class="p-6 text-center text-slate-500 font-mono text-xs surface-card rounded-xl">
+      <div class="p-6 text-center text-slate-400 font-mono text-xs bg-slate-50 rounded-xl border border-slate-200">
         No active site visit or pricing inquiries in queue.
       </div>`;
     return;
@@ -193,25 +192,25 @@ function renderInquiries(inquiries) {
   container.innerHTML = inquiries.map(inq => {
     const dateStr = inq.created_at ? new Date(inq.created_at).toLocaleString() : 'Recent';
     return `
-      <div class="p-4 bg-dark-base rounded-xl border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+          <div class="w-9 h-9 rounded-lg bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>
           <div>
             <div class="flex flex-wrap items-center gap-2">
-              <span class="font-bold text-white text-xs">${escapeHtml(inq.project_name || 'Property Inquiry')}</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-200 border border-white/10 font-bold">Unit ${escapeHtml(inq.unit_id || 'Unit')}</span>
-              <span class="text-[10px] font-mono text-emerald-400 uppercase font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">${escapeHtml(inq.inquiry_type || 'Site Visit')}</span>
+              <span class="font-bold text-slate-900 text-xs">${escapeHtml(inq.project_name || 'Property Inquiry')}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold">Unit ${escapeHtml(inq.unit_id || 'Unit')}</span>
+              <span class="text-[10px] font-mono text-emerald-700 uppercase font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${escapeHtml(inq.inquiry_type || 'Site Visit')}</span>
             </div>
-            <p class="text-xs text-slate-300 mt-1">"${escapeHtml(inq.user_message || 'Requested site visit and blueprint inspection.')}"</p>
+            <p class="text-xs text-slate-600 mt-1">"${escapeHtml(inq.user_message || 'Requested site visit and blueprint inspection.')}"</p>
           </div>
         </div>
         <div class="text-right shrink-0 flex sm:flex-col items-center sm:items-end justify-between gap-2">
-          <div class="text-[10px] font-mono text-slate-500">${dateStr}</div>
-          <button onclick="showToast('Site visit assignment confirmed')" class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition cursor-pointer">
+          <div class="text-[10px] font-mono text-slate-400">${dateStr}</div>
+          <button onclick="showToast('Site visit assignment confirmed')" class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition cursor-pointer font-bold">
             Confirm Visit
           </button>
         </div>
@@ -250,12 +249,12 @@ function openBuyerModal(buyerId) {
   barsContainer.innerHTML = dimensions.map(d => {
     const pct = Math.round((d.val / d.max) * 100);
     return `
-      <div class="p-2.5 bg-dark-base rounded-xl border border-white/5">
+      <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
         <div class="flex justify-between text-xs mb-1.5">
-          <span class="text-slate-300 font-medium">${d.label}</span>
-          <span class="text-white font-mono font-bold">${d.val} / ${d.max} (${pct}%)</span>
+          <span class="text-slate-700 font-medium">${d.label}</span>
+          <span class="text-slate-900 font-mono font-bold">${d.val} / ${d.max} (${pct}%)</span>
         </div>
-        <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
           <div class="bg-[#6D001A] h-1.5 rounded-full" style="width: ${pct}%"></div>
         </div>
       </div>
@@ -270,30 +269,30 @@ function openBuyerModal(buyerId) {
   let propHtml = '';
   if (buyerSaved.length > 0) {
     propHtml += buyerSaved.map(s => `
-      <div class="p-3 bg-dark-base rounded-xl border border-white/5 flex items-center justify-between">
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
         <div>
-          <div class="font-bold text-white text-xs">Saved Unit: ${escapeHtml(s.unit_id)}</div>
-          <div class="text-[11px] text-slate-400 mt-0.5">${escapeHtml(s.notes || 'Added to shortlisted portfolio')}</div>
+          <div class="font-bold text-slate-900 text-xs">Saved Unit: ${escapeHtml(s.unit_id)}</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(s.notes || 'Added to shortlisted portfolio')}</div>
         </div>
-        <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">Shortlisted</span>
+        <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">Shortlisted</span>
       </div>
     `).join('');
   }
 
   if (buyerInquiries.length > 0) {
     propHtml += buyerInquiries.map(i => `
-      <div class="p-3 bg-dark-base rounded-xl border border-white/5 flex items-center justify-between">
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
         <div>
-          <div class="font-bold text-white text-xs">Inquiry: ${escapeHtml(i.project_name || i.unit_id)}</div>
-          <div class="text-[11px] text-slate-400 mt-0.5">"${escapeHtml(i.user_message || 'Visit request')}"</div>
+          <div class="font-bold text-slate-900 text-xs">Inquiry: ${escapeHtml(i.project_name || i.unit_id)}</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">"${escapeHtml(i.user_message || 'Visit request')}"</div>
         </div>
-        <span class="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 font-bold">${escapeHtml(i.inquiry_type || 'Inquiry')}</span>
+        <span class="text-[10px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-bold">${escapeHtml(i.inquiry_type || 'Inquiry')}</span>
       </div>
     `).join('');
   }
 
   if (!propHtml) {
-    propHtml = `<div class="p-4 text-center text-slate-500 font-mono text-xs bg-dark-base rounded-xl border border-white/5">No specific units shortlisted yet</div>`;
+    propHtml = `<div class="p-4 text-center text-slate-400 font-mono text-xs bg-slate-50 rounded-xl border border-slate-200">No specific units shortlisted yet</div>`;
   }
   propContainer.innerHTML = propHtml;
 

@@ -1,26 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg-canvas: #090D14;
-  --bg-sidebar: #0C111C;
-  --bg-card: #101726;
-  --bg-elevated: #162035;
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-active: rgba(255, 255, 255, 0.16);
+  --bg-canvas: #F8FAFC;
+  --bg-sidebar: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #F1F5F9;
+  --border-subtle: #E2E8F0;
+  --border-active: #CBD5E1;
   --brand-primary: #6D001A;
-  --brand-hover: #8A0021;
-  --brand-light: #B8002D;
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
+  --brand-hover: #520013;
+  --brand-light: #8A0021;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
   --text-muted: #64748B;
-  --emerald: #10B981;
-  --amber: #F59E0B;
-  --blue: #3B82F6;
+  --emerald: #059669;
+  --amber: #D97706;
+  --blue: #2563EB;
 }
 
 body {
-  background-color: var(--bg-canvas);
-  color: var(--text-primary);
+  background-color: #F8FAFC;
+  color: #1E293B;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   letter-spacing: -0.01em;
   overflow-x: hidden;
@@ -29,26 +29,28 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   letter-spacing: -0.025em;
+  color: #0F172A;
 }
 
 .font-mono, .num-font {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-/* Glass & Surface Utilities */
+/* Surface Utilities */
 .surface-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
   border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
 }
 
 .surface-card:hover {
-  border-color: var(--border-active);
+  border-color: #CBD5E1;
 }
 
 .surface-elevated {
-  background-color: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
 }
 
 /* Modal Overlay & Transitions */
@@ -66,6 +68,8 @@ h1, h2, h3, h4, h5, h6 {
 .modal-container {
   transform: translateY(12px) scale(0.98);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  background-color: #FFFFFF;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
 .modal-overlay.open .modal-container {
@@ -78,7 +82,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .data-row:hover {
-  background-color: rgba(255, 255, 255, 0.025);
+  background-color: #F8FAFC;
 }
 
 /* Custom Scrollbars */
@@ -87,14 +91,14 @@ h1, h2, h3, h4, h5, h6 {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-canvas);
+  background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #CBD5E1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94A3B8;
 }
 
 /* Printable Cost Sheet */

@@ -9,11 +9,11 @@ function setInventoryView(mode) {
   const tableBtn = document.getElementById('view-toggle-table');
 
   if (mode === 'grid') {
-    if (gridBtn) gridBtn.className = "p-1.5 rounded-lg bg-slate-800 text-white font-medium shadow-sm";
-    if (tableBtn) tableBtn.className = "p-1.5 rounded-lg text-slate-400 hover:text-white";
+    if (gridBtn) gridBtn.className = "p-1.5 rounded-lg bg-white text-slate-900 border border-slate-200 font-medium shadow-sm";
+    if (tableBtn) tableBtn.className = "p-1.5 rounded-lg text-slate-500 hover:text-slate-900";
   } else {
-    if (tableBtn) tableBtn.className = "p-1.5 rounded-lg bg-slate-800 text-white font-medium shadow-sm";
-    if (gridBtn) gridBtn.className = "p-1.5 rounded-lg text-slate-400 hover:text-white";
+    if (tableBtn) tableBtn.className = "p-1.5 rounded-lg bg-white text-slate-900 border border-slate-200 font-medium shadow-sm";
+    if (gridBtn) gridBtn.className = "p-1.5 rounded-lg text-slate-500 hover:text-slate-900";
   }
 
   filterPropertiesCatalog();
@@ -33,7 +33,7 @@ function renderPropertiesGrid(props) {
 
   if (!props || props.length === 0) {
     container.innerHTML = `
-      <div class="col-span-full py-16 text-center text-slate-500 font-mono text-xs surface-card">
+      <div class="col-span-full py-16 text-center text-slate-400 font-mono text-xs bg-white rounded-xl border border-slate-200">
         No properties match your current filters. Adjust your criteria or register a new property.
       </div>`;
     return;
@@ -47,7 +47,6 @@ function renderPropertiesGrid(props) {
 }
 
 function renderPropertiesCardView(props, container) {
-  // Use authentic images for real visual impact
   const assetImages = [
     'assets/tower_exterior.jpg',
     'assets/floor_plan_blueprint.jpg',
@@ -59,21 +58,20 @@ function renderPropertiesCardView(props, container) {
   container.innerHTML = props.map((p, idx) => {
     const imgUrl = assetImages[idx % assetImages.length];
     const efficiency = p.usable_efficiency_pct || ((p.carpet_area_sqft / p.super_built_up_sqft) * 100).toFixed(1);
-    const baseRate = p.base_rate_per_sqft || Math.round((p.total_price_cr * 10000000) / p.super_built_up_sqft);
 
     return `
-      <div class="surface-card overflow-hidden flex flex-col justify-between group transition duration-200">
+      <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-slate-300 hover:shadow-md transition flex flex-col justify-between group">
         <!-- Visual Header Image -->
-        <div class="relative h-44 w-full bg-slate-900 overflow-hidden">
-          <img src="${imgUrl}" alt="${escapeHtml(p.project_name)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-85 group-hover:opacity-100">
-          <div class="absolute inset-0 bg-gradient-to-t from-[#101726] via-transparent to-black/40"></div>
+        <div class="relative h-44 w-full bg-slate-100 overflow-hidden">
+          <img src="${imgUrl}" alt="${escapeHtml(p.project_name)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
           
           <!-- Top Badges -->
           <div class="absolute top-3 left-3 right-3 flex items-center justify-between">
-            <span class="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold uppercase bg-black/75 backdrop-blur-md text-white border border-white/10">
+            <span class="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold uppercase bg-white/95 backdrop-blur-md text-slate-800 shadow-sm border border-slate-200">
               ${escapeHtml(p.micro_market)}
             </span>
-            <span class="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-[#6D001A] text-white shadow-md">
+            <span class="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-[#6D001A] text-white shadow-sm">
               ${p.bhk} BHK
             </span>
           </div>
@@ -81,12 +79,12 @@ function renderPropertiesCardView(props, container) {
           <!-- Bottom Badges -->
           <div class="absolute bottom-2.5 left-3 right-3 flex items-baseline justify-between text-white">
             <div>
-              <div class="text-[11px] font-mono text-slate-300">Unit ${escapeHtml(p.unit_id)} · Tower ${escapeHtml(p.tower || 'A')}</div>
+              <div class="text-[11px] font-mono text-slate-200">Unit ${escapeHtml(p.unit_id)} · Tower ${escapeHtml(p.tower || 'A')}</div>
               <div class="text-sm font-extrabold tracking-tight">${escapeHtml(p.project_name)}</div>
             </div>
             <div class="text-right">
               <div class="text-lg font-black num-font text-white">₹${p.total_price_cr} Cr</div>
-              <div class="text-[9px] font-mono text-emerald-400">All-Inclusive</div>
+              <div class="text-[9px] font-mono text-emerald-300 font-bold">All-Inclusive</div>
             </div>
           </div>
         </div>
@@ -94,42 +92,42 @@ function renderPropertiesCardView(props, container) {
         <!-- Body Details -->
         <div class="p-4 flex-1 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between text-xs text-slate-400 mb-3 pb-2 border-b border-white/5">
-              <span>Developer: <strong class="text-slate-200">${escapeHtml(p.developer)}</strong></span>
-              <span class="font-mono text-[10px] text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">${p.rera_id || 'TS-RERA Approved'}</span>
+            <div class="flex items-center justify-between text-xs text-slate-500 mb-3 pb-2 border-b border-slate-100">
+              <span>Developer: <strong class="text-slate-800">${escapeHtml(p.developer)}</strong></span>
+              <span class="font-mono text-[10px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-medium">${p.rera_id || 'TS-RERA Approved'}</span>
             </div>
 
             <!-- Spatial Efficiency Strip -->
-            <div class="grid grid-cols-3 gap-2 p-2.5 bg-dark-base rounded-xl border border-white/5 text-center mb-3">
+            <div class="grid grid-cols-3 gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-center mb-3">
               <div>
-                <div class="text-[9px] uppercase font-mono text-slate-500">Super Built-up</div>
-                <div class="text-xs font-bold font-mono text-slate-300 mt-0.5">${p.super_built_up_sqft} sqft</div>
+                <div class="text-[9px] uppercase font-mono text-slate-400">Super Built-up</div>
+                <div class="text-xs font-bold font-mono text-slate-700 mt-0.5">${p.super_built_up_sqft} sqft</div>
               </div>
               <div>
-                <div class="text-[9px] uppercase font-mono text-slate-500">True Carpet</div>
-                <div class="text-xs font-bold font-mono text-emerald-400 mt-0.5">${p.carpet_area_sqft} sqft</div>
+                <div class="text-[9px] uppercase font-mono text-slate-400">True Carpet</div>
+                <div class="text-xs font-bold font-mono text-emerald-600 mt-0.5">${p.carpet_area_sqft} sqft</div>
               </div>
               <div>
-                <div class="text-[9px] uppercase font-mono text-slate-500">Efficiency</div>
-                <div class="text-xs font-bold font-mono text-white mt-0.5">${efficiency}%</div>
+                <div class="text-[9px] uppercase font-mono text-slate-400">Efficiency</div>
+                <div class="text-xs font-bold font-mono text-slate-900 mt-0.5">${efficiency}%</div>
               </div>
             </div>
 
             <!-- Attributes -->
-            <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-300 mb-4">
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 border border-white/5">${escapeHtml(p.facing || 'East')} Facing</span>
-              ${p.is_corner_unit ? '<span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">Corner Unit</span>' : ''}
-              ${p.has_morning_sunlight ? '<span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">Morning Sun</span>' : ''}
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 border border-white/5">Floor: ${p.floor || '16'}</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 border border-white/5">Possession: ${p.handover_date || p.handover_year || 'Dec 2026'}</span>
+            <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-600 mb-4">
+              <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">${escapeHtml(p.facing || 'East')} Facing</span>
+              ${p.is_corner_unit ? '<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">Corner Unit</span>' : ''}
+              ${p.has_morning_sunlight ? '<span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-bold">Morning Sun</span>' : ''}
+              <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">Floor: ${p.floor || '16'}</span>
+              <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">Possession: ${p.handover_date || p.handover_year || 'Dec 2026'}</span>
             </div>
           </div>
 
           <!-- Bottom Action Strip -->
-          <div class="pt-3 border-t border-white/5 grid grid-cols-2 gap-2">
+          <div class="pt-3 border-t border-slate-100 grid grid-cols-2 gap-2">
             <button onclick="inspectCostSheet('${p.unit_id}')"
-              class="w-full py-2 px-3 rounded-xl bg-dark-base hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-white/10 transition cursor-pointer text-center flex items-center justify-center gap-1.5">
-              <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition cursor-pointer text-center flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
                 <line x1="16" y1="13" x2="8" y2="13" />
@@ -138,7 +136,7 @@ function renderPropertiesCardView(props, container) {
               <span>Cost Sheet</span>
             </button>
             <button onclick="downloadCostSheetCSV('${p.unit_id}')"
-              class="w-full py-2 px-3 rounded-xl bg-[#6D001A] hover:bg-[#8A0021] text-white text-xs font-semibold transition cursor-pointer text-center flex items-center justify-center gap-1.5">
+              class="w-full py-2 px-3 rounded-xl bg-[#6D001A] hover:bg-[#8A0021] text-white text-xs font-semibold transition cursor-pointer text-center flex items-center justify-center gap-1.5 shadow-sm">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
@@ -154,10 +152,10 @@ function renderPropertiesCardView(props, container) {
 }
 
 function renderPropertiesTableView(props, container) {
-  container.className = "w-full overflow-x-auto surface-card rounded-xl";
+  container.className = "w-full overflow-x-auto bg-white border border-slate-200 rounded-xl shadow-sm";
   container.innerHTML = `
     <table class="w-full text-left text-xs">
-      <thead class="bg-dark-base/80 text-slate-400 uppercase tracking-wider text-[10px] font-mono border-b border-white/10">
+      <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] font-mono border-b border-slate-200">
         <tr>
           <th class="py-3 px-4">Unit Identification</th>
           <th class="py-3 px-4">Project & Developer</th>
@@ -169,46 +167,46 @@ function renderPropertiesTableView(props, container) {
           <th class="py-3 px-4 text-right">Actions</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-white/5 text-slate-300">
+      <tbody class="divide-y divide-slate-100 text-slate-700">
         ${props.map(p => {
           const efficiency = p.usable_efficiency_pct || ((p.carpet_area_sqft / p.super_built_up_sqft) * 100).toFixed(1);
           return `
-            <tr class="data-row hover:bg-white/5 transition">
-              <td class="py-3 px-4 font-mono font-bold text-white">
+            <tr class="data-row hover:bg-slate-50 transition">
+              <td class="py-3 px-4 font-mono font-bold text-slate-900">
                 <div>Unit ${escapeHtml(p.unit_id)}</div>
-                <div class="text-[10px] text-slate-400 font-normal">Tower ${escapeHtml(p.tower || 'A')} · Floor ${p.floor || '1'}</div>
+                <div class="text-[10px] text-slate-500 font-normal">Tower ${escapeHtml(p.tower || 'A')} · Floor ${p.floor || '1'}</div>
               </td>
               <td class="py-3 px-4">
-                <div class="font-bold text-white">${escapeHtml(p.project_name)}</div>
-                <div class="text-[10px] text-slate-400">${escapeHtml(p.developer)}</div>
+                <div class="font-bold text-slate-900">${escapeHtml(p.project_name)}</div>
+                <div class="text-[10px] text-slate-500">${escapeHtml(p.developer)}</div>
               </td>
-              <td class="py-3 px-4 font-mono text-slate-300">
+              <td class="py-3 px-4 font-mono text-slate-700">
                 ${escapeHtml(p.micro_market)}
               </td>
               <td class="py-3 px-4 font-mono">
-                <span class="font-bold text-white">${p.bhk} BHK</span> · ${escapeHtml(p.facing || 'East')}
-                ${p.is_corner_unit ? '· <span class="text-emerald-400 font-bold">Corner</span>' : ''}
+                <span class="font-bold text-slate-900">${p.bhk} BHK</span> · ${escapeHtml(p.facing || 'East')}
+                ${p.is_corner_unit ? '· <span class="text-emerald-700 font-bold">Corner</span>' : ''}
               </td>
               <td class="py-3 px-4 font-mono">
                 <div>${p.super_built_up_sqft} SBU</div>
-                <div class="text-emerald-400 font-bold">${p.carpet_area_sqft} Carpet</div>
+                <div class="text-emerald-700 font-bold">${p.carpet_area_sqft} Carpet</div>
               </td>
               <td class="py-3 px-4 font-mono">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold ${parseFloat(efficiency) >= 77 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-300'}">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold ${parseFloat(efficiency) >= 77 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-700'}">
                   ${efficiency}%
                 </span>
               </td>
               <td class="py-3 px-4 font-mono">
-                <div class="text-sm font-bold text-white">₹${p.total_price_cr} Cr</div>
-                <div class="text-[10px] text-slate-400">₹${p.base_rate_per_sqft || ''}/sqft base</div>
+                <div class="text-sm font-bold text-slate-900">₹${p.total_price_cr} Cr</div>
+                <div class="text-[10px] text-slate-500">₹${p.base_rate_per_sqft || ''}/sqft base</div>
               </td>
               <td class="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
                 <button onclick="inspectCostSheet('${p.unit_id}')"
-                  class="px-2.5 py-1.5 rounded-lg bg-dark-base hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-white/10 transition cursor-pointer">
+                  class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition cursor-pointer">
                   Cost Sheet
                 </button>
                 <button onclick="downloadCostSheetCSV('${p.unit_id}')"
-                  class="px-2.5 py-1.5 rounded-lg bg-[#6D001A] hover:bg-[#8A0021] text-white text-xs font-semibold transition cursor-pointer">
+                  class="px-2.5 py-1.5 rounded-lg bg-[#6D001A] hover:bg-[#8A0021] text-white text-xs font-semibold transition cursor-pointer shadow-sm">
                   CSV
                 </button>
               </td>
@@ -243,7 +241,6 @@ function filterPropertiesCatalog() {
     return matchesQ && matchesMarket && matchesBudget && matchesBhk && matchesCorner && matchesSunlight;
   });
 
-  // Sorting
   if (currentSortField === 'price-asc') {
     filtered.sort((a, b) => a.total_price_cr - b.total_price_cr);
   } else if (currentSortField === 'price-desc') {
@@ -318,15 +315,15 @@ async function inspectCostSheet(unitId) {
     let html = '';
     ledgerSections.forEach(sec => {
       html += `
-        <tr class="bg-dark-base/80 border-y border-white/10">
-          <td colspan="2" class="py-2 px-4 font-mono text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sec.category}</td>
+        <tr class="bg-slate-50 border-y border-slate-200">
+          <td colspan="2" class="py-2 px-4 font-mono text-[10px] font-bold text-slate-500 uppercase tracking-wider">${sec.category}</td>
         </tr>
       `;
       sec.items.forEach(item => {
         html += `
-          <tr class="border-b border-white/5 text-xs text-slate-300 hover:bg-white/5">
+          <tr class="border-b border-slate-100 text-xs text-slate-700 hover:bg-slate-50">
             <td class="py-2.5 px-4">${item.name}</td>
-            <td class="py-2.5 px-4 text-right font-mono font-medium text-slate-100">₹${item.amount.toLocaleString('en-IN')}</td>
+            <td class="py-2.5 px-4 text-right font-mono font-semibold text-slate-900">₹${item.amount.toLocaleString('en-IN')}</td>
           </tr>
         `;
       });

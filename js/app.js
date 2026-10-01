@@ -33,18 +33,18 @@ function switchView(viewName) {
     if (v === viewName) {
       if (viewEl) viewEl.classList.remove('hidden');
       if (sideBtn) {
-        sideBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-800/90 text-white font-semibold border border-white/10 shadow-sm transition";
+        sideBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-100 text-slate-900 font-semibold border border-slate-200 shadow-sm transition";
       }
       if (topBtn) {
-        topBtn.className = "px-3.5 py-1.5 rounded-lg text-white bg-slate-800 shadow-sm font-semibold transition";
+        topBtn.className = "px-3.5 py-1.5 rounded-lg text-slate-900 bg-white shadow-sm font-semibold transition";
       }
     } else {
       if (viewEl) viewEl.classList.add('hidden');
       if (sideBtn) {
-        sideBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-medium transition";
+        sideBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium transition";
       }
       if (topBtn) {
-        topBtn.className = "px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition";
+        topBtn.className = "px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition";
       }
     }
   });

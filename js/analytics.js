@@ -113,29 +113,29 @@ function renderMicroMarketTable() {
   if (!tbody) return;
 
   tbody.innerHTML = MICRO_MARKET_BENCHMARKS.map(m => `
-    <tr class="data-row border-b border-white/5 text-xs">
+    <tr class="data-row border-b border-slate-100 hover:bg-slate-50 transition text-xs">
       <td class="py-3 px-4">
-        <div class="font-bold text-white">${m.market}</div>
-        <div class="text-[10px] text-slate-400 font-mono">${m.corridor}</div>
+        <div class="font-bold text-slate-900">${m.market}</div>
+        <div class="text-[10px] text-slate-500 font-mono">${m.corridor}</div>
       </td>
-      <td class="py-3 px-4 font-mono font-medium text-slate-200">
+      <td class="py-3 px-4 font-mono font-medium text-slate-800">
         ₹${m.avgRateSqft.toLocaleString('en-IN')}/sqft
       </td>
-      <td class="py-3 px-4 font-mono font-bold text-emerald-400">
+      <td class="py-3 px-4 font-mono font-bold text-emerald-600">
         ${m.trend12m}
       </td>
-      <td class="py-3 px-4 font-mono text-white font-bold">
+      <td class="py-3 px-4 font-mono text-slate-900 font-bold">
         ₹${m.avg3BhkTicketCr.toFixed(2)} Cr
       </td>
       <td class="py-3 px-4">
-        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
           ${m.avgCarpetEfficiency}% Carpet
         </span>
       </td>
-      <td class="py-3 px-4 font-mono text-slate-300">
+      <td class="py-3 px-4 font-mono text-slate-700">
         ${m.peakCommuteFinancialDistMin} mins (8:30 AM)
       </td>
-      <td class="py-3 px-4 text-right font-mono text-slate-400">
+      <td class="py-3 px-4 text-right font-mono text-slate-500 font-bold">
         ${m.demandSharePct}%
       </td>
     </tr>
@@ -147,28 +147,28 @@ function renderDeveloperCarpetTable() {
   if (!tbody) return;
 
   tbody.innerHTML = DEVELOPER_CARPET_INDEX.map(d => `
-    <tr class="data-row border-b border-white/5 text-xs">
+    <tr class="data-row border-b border-slate-100 hover:bg-slate-50 transition text-xs">
       <td class="py-3 px-4">
-        <div class="font-bold text-white">${d.developer}</div>
-        <div class="text-[11px] text-slate-400">${d.flagshipProject} · ${d.microMarket}</div>
+        <div class="font-bold text-slate-900">${d.developer}</div>
+        <div class="text-[11px] text-slate-500">${d.flagshipProject} · ${d.microMarket}</div>
       </td>
-      <td class="py-3 px-4 font-mono text-slate-300">
+      <td class="py-3 px-4 font-mono text-slate-700">
         ${d.quotedSbuSqft} sqft
       </td>
-      <td class="py-3 px-4 font-mono text-emerald-400 font-bold">
+      <td class="py-3 px-4 font-mono text-emerald-700 font-bold">
         ${d.verifiedCarpetSqft} sqft
       </td>
-      <td class="py-3 px-4 font-mono text-slate-200">
+      <td class="py-3 px-4 font-mono text-slate-600">
         ${d.loadingPct}% Loading
       </td>
       <td class="py-3 px-4">
-        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono bg-blue-50 text-blue-700 border border-blue-200 font-medium">
           ${d.reraId}
         </span>
       </td>
       <td class="py-3 px-4 text-right">
-        <span class="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span class="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-700 font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
           ${d.escrowStatus}
         </span>
       </td>
@@ -181,20 +181,20 @@ function renderCommuteMatrixTable() {
   if (!tbody) return;
 
   tbody.innerHTML = RUSH_HOUR_COMMUTE_MATRIX.map(c => `
-    <tr class="data-row border-b border-white/5 text-xs">
-      <td class="py-3 px-4 font-bold text-white">
+    <tr class="data-row border-b border-slate-100 hover:bg-slate-50 transition text-xs">
+      <td class="py-3 px-4 font-bold text-slate-900">
         ${c.origin}
       </td>
-      <td class="py-3 px-4 font-mono text-slate-300">
+      <td class="py-3 px-4 font-mono text-slate-700">
         ${c.destWiproCircle}
       </td>
-      <td class="py-3 px-4 font-mono text-slate-300">
+      <td class="py-3 px-4 font-mono text-slate-700">
         ${c.destWaveRock}
       </td>
-      <td class="py-3 px-4 font-mono text-slate-300">
+      <td class="py-3 px-4 font-mono text-slate-700">
         ${c.destDLFCyberCity}
       </td>
-      <td class="py-3 px-4 font-mono text-slate-300">
+      <td class="py-3 px-4 font-mono text-slate-700">
         ${c.destMindspace}
       </td>
     </tr>
