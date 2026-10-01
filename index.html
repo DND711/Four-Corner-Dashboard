@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Four Corner — Operations & Intelligence Dashboard</title>
+  <title>Four Corner — Operations & Intelligence Console</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -25,17 +25,18 @@
           colors: {
             brand: {
               DEFAULT: '#6D001A',
-              hover: '#520013',
+              hover: '#8A0021',
               dark: '#3A000E',
-              light: '#8A0021',
+              light: '#B8002D',
               soft: 'rgba(109, 0, 26, 0.15)',
             },
             dark: {
-              base: '#080B10',
-              surface: '#0F1523',
-              elevated: '#161F33',
-              border: '#1E293B',
-              hover: '#243047'
+              canvas: '#090D14',
+              sidebar: '#0C111C',
+              card: '#101726',
+              elevated: '#162035',
+              base: '#0B0F19',
+              border: 'rgba(255, 255, 255, 0.08)'
             }
           }
         }
@@ -46,7 +47,7 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body class="min-h-screen flex flex-col bg-[#080B10] text-slate-200 antialiased selection:bg-brand selection:text-white">
+<body class="min-h-screen bg-[#090D14] text-slate-200 antialiased selection:bg-brand selection:text-white flex overflow-hidden">
 
   <!-- Toast Notification -->
   <div id="toast"
@@ -57,56 +58,195 @@
     <span id="toast-msg">Operation completed successfully</span>
   </div>
 
-  <!-- Top Navigation Bar -->
-  <header class="sticky top-0 z-40 bg-[#080B10]/90 backdrop-blur-xl border-b border-dark-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- LEFT SIDEBAR NAVIGATION                                -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <aside class="hidden lg:flex flex-col w-64 bg-[#0C111C] border-r border-white/10 shrink-0 select-none z-30">
+    
+    <!-- Workspace Brand Header -->
+    <div class="h-16 px-5 border-b border-white/10 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-[#6D001A] text-white flex items-center justify-center font-black text-sm shadow-md">
+          FC
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white tracking-tight leading-none">Four Corner</div>
+          <div class="text-[10px] text-slate-400 font-mono mt-0.5">Enterprise Operations</div>
+        </div>
+      </div>
+      <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+        PROD
+      </span>
+    </div>
+
+    <!-- Active Region / Workspace Selector -->
+    <div class="p-3 border-b border-white/5">
+      <div class="p-2 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2 truncate">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span class="font-medium text-slate-300 truncate">Hyderabad West Corridor</span>
+        </div>
+        <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Navigation Groups -->
+    <div class="flex-1 overflow-y-auto p-3 space-y-6 text-xs">
       
-      <!-- Brand & Link to Public Site -->
-      <div class="flex items-center gap-3">
-        <a href="index.html" class="flex items-center gap-2.5 group">
-          <div class="w-8 h-8 rounded-lg bg-brand text-white flex items-center justify-center shadow-md group-hover:scale-105 transition">
-            <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="7" height="7" />
-              <rect x="14" y="3" width="7" height="7" />
-              <rect x="14" y="14" width="7" height="7" />
-              <rect x="3" y="14" width="7" height="7" />
-            </svg>
-          </div>
-          <div>
-            <div class="text-sm font-bold text-white tracking-tight leading-none">Four Corner</div>
-            <div class="text-[10px] text-slate-400 font-mono mt-0.5">Operations & Intelligence</div>
-          </div>
-        </a>
+      <!-- Group 1: Pipeline & Leads -->
+      <div>
+        <div class="px-3 text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2 font-bold">
+          Demand & Leads
+        </div>
+        <div class="space-y-1">
+          <button onclick="switchView('buyers')" id="side-btn-buyers"
+            class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-800/90 text-white font-semibold border border-white/10 shadow-sm transition">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              <span>Buyer Pipeline</span>
+            </div>
+            <span id="side-buyer-count" class="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/10 text-white font-bold">Live</span>
+          </button>
 
-        <div class="hidden sm:block h-5 w-px bg-slate-800 mx-2"></div>
-
-        <!-- System Engine Indicator -->
-        <div id="db-status-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="db-engine-label">PostgreSQL (Supabase)</span>
+          <button onclick="switchView('buyers'); document.getElementById('inquiries-container').scrollIntoView({behavior:'smooth'});"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-medium transition">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              <span>Site Visit Inquiries</span>
+            </div>
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          </button>
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
-      <nav class="hidden md:flex items-center bg-dark-surface p-1 rounded-xl border border-dark-border text-xs font-medium">
-        <button onclick="switchView('buyers')" id="tab-btn-buyers"
-          class="px-3.5 py-1.5 rounded-lg transition text-white bg-slate-800 shadow-sm font-semibold">
-          Buyer Intent & Pipeline
+      <!-- Group 2: Asset Inventory -->
+      <div>
+        <div class="px-3 text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2 font-bold">
+          Inventory & Pricing
+        </div>
+        <div class="space-y-1">
+          <button onclick="switchView('inventory')" id="side-btn-inventory"
+            class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-medium transition">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+              </svg>
+              <span>Verified Properties</span>
+            </div>
+            <span id="side-inventory-count" class="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/5 text-slate-400">20+</span>
+          </button>
+
+          <button onclick="openAddPropertyModal()"
+            class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-brand-light hover:text-white hover:bg-white/5 font-semibold transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span>Register New Unit</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Group 3: Market Intelligence -->
+      <div>
+        <div class="px-3 text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2 font-bold">
+          Market Intelligence
+        </div>
+        <div class="space-y-1">
+          <button onclick="switchView('analytics')" id="side-btn-analytics"
+            class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-medium transition">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+              <span>Area Benchmarks</span>
+            </div>
+            <span class="text-[10px] font-mono text-emerald-400">Live</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sidebar Bottom: System Engine Status -->
+    <div class="p-3 border-t border-white/10 bg-black/40 text-[11px] font-mono space-y-2">
+      <div class="flex items-center justify-between text-slate-400">
+        <span class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="db-engine-label">PostgreSQL (Supabase)</span>
+        </span>
+        <span class="text-slate-500">24ms</span>
+      </div>
+      <div class="text-[10px] text-slate-500 truncate">
+        Connected: aws-0-ap-northeast-2
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- MAIN WORKSPACE                                         -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+    
+    <!-- Top Application Bar -->
+    <header class="h-16 px-4 sm:px-6 border-b border-white/10 bg-[#090D14]/90 backdrop-blur-xl flex items-center justify-between gap-4 shrink-0 z-20">
+      
+      <!-- Left: Mobile Brand & Global Search -->
+      <div class="flex items-center gap-3 flex-1 max-w-xl">
+        <div class="lg:hidden flex items-center gap-2 shrink-0">
+          <div class="w-7 h-7 rounded-lg bg-[#6D001A] text-white flex items-center justify-center font-bold text-xs">
+            FC
+          </div>
+        </div>
+
+        <!-- Global Search Bar with Cmd+K hint -->
+        <div class="relative w-full">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)"
+            placeholder="Search buyers, phone, project name, unit ID, TS-RERA..."
+            class="w-full bg-[#101726] border border-white/10 rounded-xl pl-9 pr-14 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-slate-400 transition">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono bg-white/10 px-1.5 py-0.5 rounded text-slate-400 pointer-events-none">
+            ⌘K
+          </span>
+        </div>
+      </div>
+
+      <!-- Center Nav Tabs for Medium Screens -->
+      <nav class="hidden md:flex lg:hidden items-center bg-[#101726] p-1 rounded-xl border border-white/10 text-xs font-medium">
+        <button onclick="switchView('buyers')" id="tab-btn-buyers" class="px-3 py-1.5 rounded-lg text-white bg-slate-800 shadow-sm font-semibold">
+          Buyers
         </button>
-        <button onclick="switchView('inventory')" id="tab-btn-inventory"
-          class="px-3.5 py-1.5 rounded-lg transition text-slate-400 hover:text-white">
-          Property Inventory & Cost Sheets
+        <button onclick="switchView('inventory')" id="tab-btn-inventory" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white">
+          Inventory
         </button>
-        <button onclick="switchView('analytics')" id="tab-btn-analytics"
-          class="px-3.5 py-1.5 rounded-lg transition text-slate-400 hover:text-white">
-          Awareness & Market Analytics
+        <button onclick="switchView('analytics')" id="tab-btn-analytics" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white">
+          Intelligence
         </button>
       </nav>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-2.5">
+      <!-- Right Action Controls -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        
         <button onclick="openAddPropertyModal()"
-          class="inline-flex items-center gap-1.5 bg-brand hover:bg-brand-hover text-white text-xs font-semibold px-3.5 py-2 rounded-xl border border-red-900/40 shadow-sm transition cursor-pointer">
+          class="inline-flex items-center gap-1.5 bg-[#6D001A] hover:bg-[#8A0021] text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition cursor-pointer shadow-sm">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -117,7 +257,7 @@
         <!-- Export Dropdown -->
         <div class="relative">
           <button onclick="toggleExportMenu()"
-            class="inline-flex items-center gap-1.5 bg-dark-surface hover:bg-dark-elevated text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-dark-border transition cursor-pointer">
+            class="inline-flex items-center gap-1.5 bg-[#101726] hover:bg-slate-800 text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-white/10 transition cursor-pointer">
             <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
@@ -129,25 +269,25 @@
             </svg>
           </button>
           
-          <div id="export-dropdown" class="hidden absolute right-0 mt-1.5 w-56 bg-dark-surface border border-dark-border rounded-xl shadow-2xl py-1 z-50 text-xs">
-            <button onclick="exportBuyersCSV()" class="w-full text-left px-3.5 py-2 text-slate-300 hover:text-white hover:bg-dark-elevated flex items-center justify-between">
-              <span>Export Buyer Intent Pipeline</span>
+          <div id="export-dropdown" class="hidden absolute right-0 mt-1.5 w-60 bg-[#101726] border border-white/10 rounded-xl shadow-2xl py-1 z-50 text-xs">
+            <button onclick="exportBuyersCSV()" class="w-full text-left px-3.5 py-2.5 text-slate-300 hover:text-white hover:bg-white/5 flex items-center justify-between">
+              <span>Export Buyer Pipeline</span>
               <span class="text-[10px] font-mono text-slate-500">.CSV</span>
             </button>
-            <button onclick="exportInventoryCSV()" class="w-full text-left px-3.5 py-2 text-slate-300 hover:text-white hover:bg-dark-elevated flex items-center justify-between border-t border-dark-border">
+            <button onclick="exportInventoryCSV()" class="w-full text-left px-3.5 py-2.5 text-slate-300 hover:text-white hover:bg-white/5 flex items-center justify-between border-t border-white/5">
               <span>Export Property Catalog</span>
               <span class="text-[10px] font-mono text-slate-500">.CSV</span>
             </button>
-            <button onclick="exportAwarenessReportCSV()" class="w-full text-left px-3.5 py-2 text-slate-300 hover:text-white hover:bg-dark-elevated flex items-center justify-between border-t border-dark-border">
-              <span>Export User Awareness Metrics</span>
+            <button onclick="exportAwarenessReportCSV()" class="w-full text-left px-3.5 py-2.5 text-slate-300 hover:text-white hover:bg-white/5 flex items-center justify-between border-t border-white/5">
+              <span>Export Market Benchmarks</span>
               <span class="text-[10px] font-mono text-slate-500">.CSV</span>
             </button>
           </div>
         </div>
 
         <!-- Reload Data Button -->
-        <button onclick="loadDashboardData()" title="Reload Data"
-          class="p-2 bg-dark-surface hover:bg-dark-elevated text-slate-400 hover:text-white rounded-xl border border-dark-border transition cursor-pointer">
+        <button onclick="loadDashboardData()" title="Synchronize Database"
+          class="p-2 bg-[#101726] hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl border border-white/10 transition cursor-pointer">
           <svg id="reload-icon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="23 4 23 10 17 10" />
             <polyline points="1 20 1 14 7 14" />
@@ -156,417 +296,427 @@
         </button>
 
       </div>
-    </div>
+    </header>
 
-    <!-- Mobile Navigation Sub-bar -->
-    <div class="md:hidden border-t border-dark-border px-4 py-2 flex items-center justify-around text-xs bg-dark-surface">
-      <button onclick="switchView('buyers')" id="mob-tab-buyers" class="py-1 font-semibold text-white">
-        Buyer Intent
-      </button>
-      <button onclick="switchView('inventory')" id="mob-tab-inventory" class="py-1 text-slate-400">
-        Inventory
-      </button>
-      <button onclick="switchView('analytics')" id="mob-tab-analytics" class="py-1 text-slate-400">
-        Awareness
-      </button>
-    </div>
-  </header>
+    <!-- Workspace Viewport Scrollable -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
 
-  <!-- Main Content Area -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- VIEW 1: BUYER PIPELINE & INTENT                        -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div id="view-buyers" class="space-y-6">
 
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- VIEW 1: BUYER INTENT & PIPELINE                        -->
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <div id="view-buyers" class="space-y-6">
-
-      <!-- Summary KPI Ribbon -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-4 sm:p-5 shadow-sm">
-          <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-            <span>Total Registered Buyers</span>
-            <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-          </div>
-          <div class="mt-2.5 flex items-baseline gap-2">
-            <span id="kpi-total-buyers" class="text-2xl sm:text-3xl font-extrabold text-white num-font">--</span>
-            <span class="text-[11px] text-emerald-400 font-mono">100% verified</span>
-          </div>
-          <p class="text-[11px] text-slate-500 mt-1">Real buyers registered via OAuth & web</p>
-        </div>
-
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-4 sm:p-5 shadow-sm">
-          <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-            <span>High-Intent & Evaluators</span>
-            <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 14 14" />
-            </svg>
-          </div>
-          <div class="mt-2.5 flex items-baseline gap-2">
-            <span id="kpi-high-intent" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 num-font">--</span>
-            <span class="text-[11px] text-slate-400 font-mono">Ready to buy</span>
-          </div>
-          <p class="text-[11px] text-slate-500 mt-1">Intent score &ge; 60/100 points</p>
-        </div>
-
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-4 sm:p-5 shadow-sm">
-          <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-            <span>Property Inquiries</span>
-            <svg class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-            </svg>
-          </div>
-          <div class="mt-2.5 flex items-baseline gap-2">
-            <span id="kpi-inquiries" class="text-2xl sm:text-3xl font-extrabold text-white num-font">--</span>
-            <span class="text-[11px] text-amber-400 font-mono">Site visits & pricing</span>
-          </div>
-          <p class="text-[11px] text-slate-500 mt-1">Direct inquiries via AI assistants</p>
-        </div>
-
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-4 sm:p-5 shadow-sm">
-          <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-            <span>Shortlisted Units</span>
-            <svg class="w-4 h-4 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-            </svg>
-          </div>
-          <div class="mt-2.5 flex items-baseline gap-2">
-            <span id="kpi-saved-units" class="text-2xl sm:text-3xl font-extrabold text-white num-font">--</span>
-            <span class="text-[11px] text-slate-400 font-mono">Portfolios</span>
-          </div>
-          <p class="text-[11px] text-slate-500 mt-1">Specific units saved by buyers</p>
-        </div>
-      </div>
-
-      <!-- Buyer Intent Table Container -->
-      <div class="bg-dark-surface rounded-2xl border border-dark-border overflow-hidden shadow-sm">
-        <div class="p-4 sm:p-5 border-b border-dark-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Registered Buyers & Real Estate Readiness</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Calculated across financial capability, commute match, floor plan depth, and legal checks.</p>
-          </div>
-
-          <!-- Table Search & Filter -->
-          <div class="flex items-center gap-2.5">
-            <input type="text" id="buyer-search-input" oninput="filterBuyersTable()" placeholder="Search buyer, phone, area..."
-              class="bg-dark-base border border-dark-border rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-500 w-48 sm:w-60">
-            <select id="buyer-tier-filter" onchange="filterBuyersTable()"
-              class="bg-dark-base border border-dark-border rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-slate-500">
-              <option value="ALL">All Tiers</option>
-              <option value="HIGH_INTENT">High Intent</option>
-              <option value="SERIOUS_EVALUATOR">Serious Evaluator</option>
-              <option value="WARM_EXPLORER">Warm Explorer</option>
-              <option value="CASUAL_BROWSER">Casual Browser</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-dark-base/60 text-slate-400 uppercase tracking-wider text-[10px] font-mono border-b border-dark-border">
-              <tr>
-                <th class="py-3 px-4">Buyer Identity</th>
-                <th class="py-3 px-4">Search Criteria</th>
-                <th class="py-3 px-4">Readiness Score</th>
-                <th class="py-3 px-4">Intent Breakdown</th>
-                <th class="py-3 px-4">Target Properties</th>
-                <th class="py-3 px-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody id="buyers-table-body" class="divide-y divide-dark-border text-slate-300">
-              <tr>
-                <td colspan="6" class="py-8 text-center text-slate-500 font-mono text-xs">
-                  Loading buyers from Supabase PostgreSQL...
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Live Property Inquiries Feed -->
-      <div class="bg-dark-surface rounded-2xl border border-dark-border p-4 sm:p-5 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <h3 class="text-sm sm:text-base font-bold text-white tracking-tight">Live Inquiries Stream</h3>
-            <p class="text-xs text-slate-400">Direct booking and information inquiries generated by users</p>
-          </div>
-          <span id="inquiry-count-badge" class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">0 Inquiries</span>
-        </div>
-
-        <div id="inquiries-container" class="space-y-2.5">
-          <!-- Inquiries rendered dynamically -->
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- VIEW 2: PROPERTY INVENTORY & TRANSPARENT COST SHEETS   -->
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <div id="view-inventory" class="hidden space-y-6">
-
-      <!-- Filters & Search Toolbar -->
-      <div class="bg-dark-surface rounded-2xl border border-dark-border p-4 sm:p-5 shadow-sm">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+        <!-- Executive KPI Strip -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Search Project / Unit</label>
-            <input type="text" id="prop-search-query" oninput="filterPropertiesCatalog()" placeholder="e.g. Akrida, CND-T5"
-              class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-500">
+          <div class="surface-card p-5">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>Active Buyer Leads</span>
+              <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+              </svg>
+            </div>
+            <div class="mt-3 flex items-baseline justify-between">
+              <span id="kpi-total-buyers" class="text-3xl font-extrabold text-white num-font">--</span>
+              <span class="text-[11px] font-mono text-emerald-400 font-bold">+14.2% / 7d</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Verified searchers registered via OAuth</p>
           </div>
 
+          <div class="surface-card p-5">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>High-Intent Cohort</span>
+              <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 14 14" />
+              </svg>
+            </div>
+            <div class="mt-3 flex items-baseline justify-between">
+              <span id="kpi-high-intent" class="text-3xl font-extrabold text-emerald-400 num-font">--</span>
+              <span class="text-[11px] font-mono text-slate-400">Score &ge; 60</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Active site visits & financing ready</p>
+          </div>
+
+          <div class="surface-card p-5">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>Pending Site Visits</span>
+              <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+              </svg>
+            </div>
+            <div class="mt-3 flex items-baseline justify-between">
+              <span id="kpi-inquiries" class="text-3xl font-extrabold text-white num-font">--</span>
+              <span class="text-[11px] font-mono text-amber-400">Direct Inquiries</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Direct requests via AI assistants</p>
+          </div>
+
+          <div class="surface-card p-5">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>Pipeline Purchasing Power</span>
+              <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+            </div>
+            <div class="mt-3 flex items-baseline justify-between">
+              <span id="kpi-pipeline-gmv" class="text-3xl font-extrabold text-white num-font">₹42.8 Cr</span>
+              <span class="text-[11px] font-mono text-slate-400">Avg ₹2.1 Cr</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Aggregated verified budget capacity</p>
+          </div>
+
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="surface-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Micro-Market</label>
-            <select id="prop-market-select" onchange="filterPropertiesCatalog()"
-              class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-slate-500">
-              <option value="">All West Hyderabad</option>
+            <h2 class="text-base font-bold text-white tracking-tight">Registered Buyer Pipeline</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Ranked by 5-dimension readiness: budget discipline, peak commute, carpet efficiency, and RERA due diligence.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <input type="text" id="buyer-search-input" oninput="filterBuyersTable()" placeholder="Filter buyer, email, phone..."
+              class="bg-dark-base border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-slate-400 w-44 sm:w-56">
+
+            <select id="buyer-tier-filter" onchange="filterBuyersTable()"
+              class="bg-dark-base border border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-slate-400">
+              <option value="ALL">All Intent Tiers</option>
+              <option value="HIGH_INTENT">High Intent (Score &ge; 80)</option>
+              <option value="SERIOUS_EVALUATOR">Active Evaluator (60 - 79)</option>
+              <option value="WARM_EXPLORER">Active Searcher (40 - 59)</option>
+              <option value="CASUAL_BROWSER">Casual Browser (&lt; 40)</option>
+            </select>
+
+            <select id="buyer-market-filter" onchange="filterBuyersTable()"
+              class="bg-dark-base border border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-slate-400">
+              <option value="ALL">All Micro-Markets</option>
               <option value="Tellapur">Tellapur</option>
               <option value="Kokapet">Kokapet</option>
-              <option value="Nanakramguda">Nanakramguda</option>
+              <option value="Financial District">Financial District</option>
               <option value="Puppalguda">Puppalguda</option>
-              <option value="Kollur">Kollur</option>
+              <option value="Kondapur">Kondapur</option>
             </select>
           </div>
+        </div>
 
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Max Budget Ceiling</label>
+        <!-- Buyer Pipeline Data Table -->
+        <div class="surface-card overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-dark-base/80 text-slate-400 uppercase tracking-wider text-[10px] font-mono border-b border-white/10">
+                <tr>
+                  <th class="py-3 px-4">Buyer & Contact</th>
+                  <th class="py-3 px-4">Search Criteria</th>
+                  <th class="py-3 px-4">Readiness Score</th>
+                  <th class="py-3 px-4">Intent Breakdown</th>
+                  <th class="py-3 px-4">Shortlisted & Inquiries</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="buyers-table-body" class="divide-y divide-white/5 text-slate-300">
+                <tr>
+                  <td colspan="6" class="py-12 text-center text-slate-500 font-mono text-xs">
+                    Loading buyer leads from database...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Live Inquiries Stream -->
+        <div class="surface-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-white tracking-tight">Live Inquiries & Site Visit Queue</h3>
+              <p class="text-xs text-slate-400">Direct booking and information inquiries captured via AI assistant channels</p>
+            </div>
+            <span id="inquiry-count-badge" class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-slate-800 text-slate-300 border border-white/10">
+              0 Pending Requests
+            </span>
+          </div>
+
+          <div id="inquiries-container" class="space-y-3">
+            <!-- Dynamic Inquiries -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- VIEW 2: PROPERTY INVENTORY & COST SHEETS                -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div id="view-inventory" class="hidden space-y-6">
+
+        <!-- Inventory Filter Toolbar -->
+        <div class="surface-card p-4 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-base font-bold text-white tracking-tight">Verified Property Catalog</h2>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Every unit verified with TS-RERA registration, architectural carpet efficiency, and itemized out-the-door pricing.
+              </p>
+            </div>
+
+            <!-- View Switcher & Counter -->
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-mono text-slate-400">
+                <strong id="prop-matched-count" class="text-white">0</strong> units available
+              </span>
+
+              <!-- Grid vs Table Toggle -->
+              <div class="flex items-center bg-dark-base p-1 rounded-lg border border-white/10">
+                <button onclick="setInventoryView('grid')" id="view-toggle-grid" title="Card Grid View"
+                  class="p-1.5 rounded-lg bg-slate-800 text-white font-medium shadow-sm transition">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                  </svg>
+                </button>
+                <button onclick="setInventoryView('table')" id="view-toggle-table" title="Dense Spreadsheet View"
+                  class="p-1.5 rounded-lg text-slate-400 hover:text-white transition">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Param Filters -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-2 border-t border-white/5">
+            <input type="text" id="prop-search-query" oninput="filterPropertiesCatalog()" placeholder="Search project, developer..."
+              class="bg-dark-base border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-slate-400">
+
+            <select id="prop-market-select" onchange="filterPropertiesCatalog()"
+              class="bg-dark-base border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-slate-400">
+              <option value="">All Micro-Markets</option>
+              <option value="Tellapur">Tellapur</option>
+              <option value="Kokapet">Kokapet</option>
+              <option value="Financial District">Financial District</option>
+              <option value="Puppalguda">Puppalguda</option>
+              <option value="Kondapur">Kondapur</option>
+              <option value="Nanakramguda">Nanakramguda</option>
+            </select>
+
             <select id="prop-budget-select" onchange="filterPropertiesCatalog()"
-              class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-slate-500">
-              <option value="">No Limit</option>
-              <option value="1.0">Up to ₹1.00 Cr</option>
-              <option value="1.2">Up to ₹1.20 Cr</option>
-              <option value="1.5">Up to ₹1.50 Cr</option>
-              <option value="2.0">Up to ₹2.00 Cr</option>
+              class="bg-dark-base border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-slate-400">
+              <option value="">Max Budget (Any)</option>
+              <option value="1.5">Under ₹1.5 Cr</option>
+              <option value="2.0">Under ₹2.0 Cr</option>
+              <option value="2.5">Under ₹2.5 Cr</option>
+              <option value="3.5">Under ₹3.5 Cr</option>
             </select>
-          </div>
 
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">BHK Configuration</label>
             <select id="prop-bhk-select" onchange="filterPropertiesCatalog()"
-              class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-slate-500">
-              <option value="">Any BHK</option>
+              class="bg-dark-base border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-slate-400">
+              <option value="">All Configurations</option>
               <option value="2">2 BHK</option>
               <option value="2.5">2.5 BHK</option>
               <option value="3">3 BHK</option>
               <option value="3.5">3.5 BHK</option>
               <option value="4">4 BHK</option>
             </select>
-          </div>
 
-          <div class="flex flex-col justify-end">
-            <div class="flex items-center gap-3 pt-1">
-              <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
-                <input type="checkbox" id="prop-corner-check" onchange="filterPropertiesCatalog()" class="rounded bg-dark-base border-dark-border text-brand focus:ring-0">
-                <span>Corner Units</span>
+            <select id="prop-sort-select" onchange="handleInventorySort(this.value)"
+              class="bg-dark-base border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-slate-400">
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="efficiency-desc">Carpet Efficiency %</option>
+              <option value="sbu-desc">Super Built-up (SBU)</option>
+            </select>
+
+            <!-- Toggle Checkboxes -->
+            <div class="flex items-center gap-3 px-2">
+              <label class="inline-flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" id="prop-corner-check" onchange="filterPropertiesCatalog()" class="rounded bg-slate-800 border-white/10 text-brand focus:ring-0">
+                <span>Corner</span>
               </label>
-              <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
-                <input type="checkbox" id="prop-sunlight-check" onchange="filterPropertiesCatalog()" class="rounded bg-dark-base border-dark-border text-brand focus:ring-0">
-                <span>Morning Light</span>
+              <label class="inline-flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" id="prop-sunlight-check" onchange="filterPropertiesCatalog()" class="rounded bg-slate-800 border-white/10 text-brand focus:ring-0">
+                <span>Morning Sun</span>
               </label>
             </div>
           </div>
-
-        </div>
-      </div>
-
-      <!-- Properties Grid -->
-      <div>
-        <div class="flex items-center justify-between mb-3 px-1">
-          <div class="text-xs text-slate-400 font-mono">
-            Showing <span id="prop-matched-count" class="text-white font-bold">0</span> verified units
-          </div>
-          <button onclick="openAddPropertyModal()" class="text-xs text-brand-light hover:underline font-semibold flex items-center gap-1">
-            <span>+ Manual Entry of Unit Details</span>
-          </button>
         </div>
 
-        <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Property cards rendered dynamically -->
+        <!-- Inventory Grid / Table Container -->
+        <div id="inventory-container">
+          <!-- Rendered dynamically -->
         </div>
+
       </div>
 
-    </div>
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- VIEW 3: MARKET INTELLIGENCE & BENCHMARKS               -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div id="view-analytics" class="hidden space-y-6">
 
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- VIEW 3: AWARENESS & MARKET ANALYTICS                   -->
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <div id="view-analytics" class="hidden space-y-6">
-
-      <!-- Higher-Level Awareness Headline -->
-      <div class="bg-gradient-to-r from-dark-surface via-dark-surface to-brand-soft rounded-2xl border border-dark-border p-6 shadow-sm">
-        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Buyer Market Awareness & Validation Metrics</h2>
-        <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
-          Aggregated metrics tracking buyer evaluation standards across usable carpet area,
-          peak commute times, itemized cost breakdowns, and TS-RERA legal compliance.
-        </p>
-      </div>
-
-      <!-- Awareness Metrics -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-5">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-semibold text-slate-400">Usable Carpet Area Validation</span>
-            <span class="text-xs font-bold text-emerald-400 num-font">82%</span>
-          </div>
-          <div class="w-full bg-slate-800 rounded-full h-2 mb-3 overflow-hidden">
-            <div class="bg-emerald-400 h-2 rounded-full" style="width: 82%"></div>
-          </div>
-          <p class="text-[11px] text-slate-400 leading-relaxed">
-            Buyers evaluating usable carpet area rather than gross built-up measurements.
+        <!-- Executive Intelligence Header -->
+        <div class="surface-card p-6 border-l-4 border-l-[#6D001A]">
+          <h2 class="text-xl font-bold text-white tracking-tight">West Hyderabad Micro-Market Benchmarks</h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl leading-relaxed">
+            Empirical baseline pricing, 12-month appreciation trends, verified true carpet area loading ratios,
+            and measured 8:30 AM rush-hour commute durations across major West Hyderabad nodes.
           </p>
         </div>
 
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-5">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-semibold text-slate-400">Peak Commute Validation</span>
-            <span class="text-xs font-bold text-blue-400 num-font">78%</span>
+        <!-- Table 1: Micro-Market Benchmark Matrix -->
+        <div class="surface-card overflow-hidden">
+          <div class="p-4 border-b border-white/10 flex items-center justify-between">
+            <h3 class="text-sm font-bold text-white">Micro-Market Price & Efficiency Index</h3>
+            <span class="text-[10px] font-mono text-slate-400">Quarterly Audited</span>
           </div>
-          <div class="w-full bg-slate-800 rounded-full h-2 mb-3 overflow-hidden">
-            <div class="bg-blue-400 h-2 rounded-full" style="width: 78%"></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-dark-base/80 text-slate-400 uppercase tracking-wider text-[10px] font-mono border-b border-white/10">
+                <tr>
+                  <th class="py-3 px-4">Micro-Market Node</th>
+                  <th class="py-3 px-4">Avg Base Rate / Sqft</th>
+                  <th class="py-3 px-4">12M Price Delta</th>
+                  <th class="py-3 px-4">Avg 3 BHK Ticket</th>
+                  <th class="py-3 px-4">Carpet Efficiency</th>
+                  <th class="py-3 px-4">Peak Commute to Financial Dist</th>
+                  <th class="py-3 px-4 text-right">Buyer Demand Share</th>
+                </tr>
+              </thead>
+              <tbody id="micro-market-table-body" class="divide-y divide-white/5 text-slate-300">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
           </div>
-          <p class="text-[11px] text-slate-400 leading-relaxed">
-            Travel time calculated using 8:30–10:00 AM peak traffic rather than off-peak estimates.
-          </p>
         </div>
 
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-5">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-semibold text-slate-400">Total Cost Review</span>
-            <span class="text-xs font-bold text-amber-400 num-font">91%</span>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          <!-- Table 2: Developer Carpet Loading Index -->
+          <div class="surface-card overflow-hidden">
+            <div class="p-4 border-b border-white/10">
+              <h3 class="text-sm font-bold text-white">Developer Carpet Efficiency & Loading Index</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Quoted Super Built-up vs TS-RERA Usable Carpet Area</p>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-dark-base/80 text-slate-400 uppercase tracking-wider text-[10px] font-mono border-b border-white/10">
+                  <tr>
+                    <th class="py-3 px-4">Developer & Project</th>
+                    <th class="py-3 px-4">Quoted SBU</th>
+                    <th class="py-3 px-4">TS-RERA Carpet</th>
+                    <th class="py-3 px-4">Loading Markup</th>
+                    <th class="py-3 px-4">RERA ID</th>
+                    <th class="py-3 px-4 text-right">70% Escrow</th>
+                  </tr>
+                </thead>
+                <tbody id="developer-carpet-table-body" class="divide-y divide-white/5 text-slate-300">
+                  <!-- Dynamic Rows -->
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="w-full bg-slate-800 rounded-full h-2 mb-3 overflow-hidden">
-            <div class="bg-amber-400 h-2 rounded-full" style="width: 91%"></div>
+
+          <!-- Table 3: Rush-Hour Peak Commute Matrix -->
+          <div class="surface-card overflow-hidden">
+            <div class="p-4 border-b border-white/10">
+              <h3 class="text-sm font-bold text-white">8:30–9:30 AM Rush-Hour Commute Matrix</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Empirical peak traffic measurements to major IT employers</p>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-dark-base/80 text-slate-400 uppercase tracking-wider text-[10px] font-mono border-b border-white/10">
+                  <tr>
+                    <th class="py-3 px-4">Origin Node</th>
+                    <th class="py-3 px-4">Wipro Circle</th>
+                    <th class="py-3 px-4">WaveRock</th>
+                    <th class="py-3 px-4">DLF CyberCity</th>
+                    <th class="py-3 px-4">Mindspace</th>
+                  </tr>
+                </thead>
+                <tbody id="commute-matrix-table-body" class="divide-y divide-white/5 text-slate-300">
+                  <!-- Dynamic Rows -->
+                </tbody>
+              </table>
+            </div>
           </div>
-          <p class="text-[11px] text-slate-400 leading-relaxed">
-            Buyers reviewing total out-the-door costs including floor rise, GST, and infra charges.
-          </p>
+
         </div>
 
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-5">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-semibold text-slate-400">TS-RERA Compliance Verification</span>
-            <span class="text-xs font-bold text-purple-400 num-font">88%</span>
+        <!-- Funnel Distribution -->
+        <div class="surface-card p-5">
+          <h3 class="text-sm font-bold text-white mb-4">Buyer Readiness Funnel Distribution</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="p-4 rounded-xl bg-dark-base border border-white/5">
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-emerald-400">High Intent</span>
+                <span id="tier-count-high" class="font-mono text-slate-300">--</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-2">
+                <div id="tier-bar-high" class="bg-emerald-400 h-2 rounded-full" style="width: 25%"></div>
+              </div>
+              <p class="text-[10px] text-slate-500">Site visit requested & financing pre-approved</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-dark-base border border-white/5">
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-amber-400">Active Evaluator</span>
+                <span id="tier-count-serious" class="font-mono text-slate-300">--</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-2">
+                <div id="tier-bar-serious" class="bg-amber-400 h-2 rounded-full" style="width: 40%"></div>
+              </div>
+              <p class="text-[10px] text-slate-500">Inspecting blueprints & itemized cost sheets</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-dark-base border border-white/5">
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-blue-400">Active Searcher</span>
+                <span id="tier-count-warm" class="font-mono text-slate-300">--</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-2">
+                <div id="tier-bar-warm" class="bg-blue-400 h-2 rounded-full" style="width: 20%"></div>
+              </div>
+              <p class="text-[10px] text-slate-500">Filtering micro-markets and budget bands</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-dark-base border border-white/5">
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-slate-400">Casual Browser</span>
+                <span id="tier-count-casual" class="font-mono text-slate-300">--</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-2">
+                <div id="tier-bar-casual" class="bg-slate-500 h-2 rounded-full" style="width: 15%"></div>
+              </div>
+              <p class="text-[10px] text-slate-500">Initial exploratory searchers</p>
+            </div>
+
           </div>
-          <div class="w-full bg-slate-800 rounded-full h-2 mb-3 overflow-hidden">
-            <div class="bg-purple-400 h-2 rounded-full" style="width: 88%"></div>
-          </div>
-          <p class="text-[11px] text-slate-400 leading-relaxed">
-            Verification of project registration, approved layout plans, and escrow compliance.
-          </p>
         </div>
 
       </div>
 
-      <!-- Demand Distribution & Pipeline -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-        <!-- Micro-Market Demand Overview -->
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-5 shadow-sm">
-          <h3 class="text-sm sm:text-base font-bold text-white tracking-tight mb-4">West Hyderabad Micro-Market Demand Overview</h3>
-          <div class="space-y-3.5">
-            <div>
-              <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-300 font-medium">Tellapur (ORR Exit 2 Corridor)</span>
-                <span class="text-white font-mono font-bold">42%</span>
-              </div>
-              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                <div class="bg-brand h-2 rounded-full" style="width: 42%"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-300 font-medium">Kokapet (Golden Mile & SEZ)</span>
-                <span class="text-white font-mono font-bold">28%</span>
-              </div>
-              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                <div class="bg-brand-light h-2 rounded-full" style="width: 28%"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-300 font-medium">Nanakramguda & Financial District</span>
-                <span class="text-white font-mono font-bold">18%</span>
-              </div>
-              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                <div class="bg-emerald-500 h-2 rounded-full" style="width: 18%"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-300 font-medium">Puppalguda & Narsingi</span>
-                <span class="text-white font-mono font-bold">12%</span>
-              </div>
-              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                <div class="bg-amber-500 h-2 rounded-full" style="width: 12%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Buyer Intent Tier Distribution -->
-        <div class="bg-dark-surface rounded-2xl border border-dark-border p-5 shadow-sm">
-          <h3 class="text-sm sm:text-base font-bold text-white tracking-tight mb-4">Buyer Readiness Funnel</h3>
-          <div class="space-y-3.5">
-            <div class="p-3 rounded-xl bg-dark-base border border-dark-border flex items-center justify-between">
-              <div>
-                <div class="text-xs font-bold text-emerald-400">High-Intent Buyers (80–100 pts)</div>
-                <div class="text-[11px] text-slate-400">Ready to book within 30 days · Multiple verified cost sheets evaluated</div>
-              </div>
-              <span id="tier-count-high" class="text-sm font-mono font-bold text-white bg-slate-800 px-2.5 py-1 rounded-lg">--</span>
-            </div>
-
-            <div class="p-3 rounded-xl bg-dark-base border border-dark-border flex items-center justify-between">
-              <div>
-                <div class="text-xs font-bold text-amber-400">Serious Evaluators (60–79 pts)</div>
-                <div class="text-[11px] text-slate-400">Evaluating blueprints · Units saved in personal portfolio</div>
-              </div>
-              <span id="tier-count-serious" class="text-sm font-mono font-bold text-white bg-slate-800 px-2.5 py-1 rounded-lg">--</span>
-            </div>
-
-            <div class="p-3 rounded-xl bg-dark-base border border-dark-border flex items-center justify-between">
-              <div>
-                <div class="text-xs font-bold text-blue-400">Warm Explorers (40–59 pts)</div>
-                <div class="text-[11px] text-slate-400">Active criteria search · Specific micro-market and budget bounded</div>
-              </div>
-              <span id="tier-count-warm" class="text-sm font-mono font-bold text-white bg-slate-800 px-2.5 py-1 rounded-lg">--</span>
-            </div>
-
-            <div class="p-3 rounded-xl bg-dark-base border border-dark-border flex items-center justify-between">
-              <div>
-                <div class="text-xs font-bold text-slate-400">Casual Browsers (0–39 pts)</div>
-                <div class="text-[11px] text-slate-500">Initial exploratory queries · General information gathering</div>
-              </div>
-              <span id="tier-count-casual" class="text-sm font-mono font-bold text-white bg-slate-800 px-2.5 py-1 rounded-lg">--</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-  </main>
+    </main>
+  </div>
 
   <!-- ═══════════════════════════════════════════════════════ -->
-  <!-- MODAL: BUYER PROFILE & TARGET PROPERTIES                -->
+  <!-- MODAL: BUYER PROFILE DOSSIER                           -->
   <!-- ═══════════════════════════════════════════════════════ -->
   <div id="buyer-detail-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4" onclick="if(event.target===this)closeBuyerModal()">
-    <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
-    <div class="modal-card relative w-full max-w-2xl bg-dark-surface border border-dark-border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+    <div class="modal-container relative w-full max-w-2xl bg-[#101726] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
       
-      <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
+      <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-[#0C111C]">
         <div>
-          <h3 id="modal-buyer-name" class="text-lg font-bold text-white">Buyer Profile</h3>
+          <h3 id="modal-buyer-name" class="text-base font-bold text-white">Buyer Profile</h3>
           <p id="modal-buyer-sub" class="text-xs text-slate-400 font-mono">usr_id · joined date</p>
         </div>
         <button onclick="closeBuyerModal()" class="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer">
@@ -581,40 +731,40 @@
         
         <!-- Contact & Criteria Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div class="bg-dark-base p-3 rounded-xl border border-dark-border">
+          <div class="bg-dark-base p-3 rounded-xl border border-white/5">
             <div class="text-[10px] text-slate-500 uppercase font-mono">Email Address</div>
             <div id="modal-buyer-email" class="text-xs text-white font-medium truncate mt-0.5">--</div>
           </div>
-          <div class="bg-dark-base p-3 rounded-xl border border-dark-border">
+          <div class="bg-dark-base p-3 rounded-xl border border-white/5">
             <div class="text-[10px] text-slate-500 uppercase font-mono">Phone Number</div>
             <div id="modal-buyer-phone" class="text-xs text-white font-medium truncate mt-0.5">--</div>
           </div>
-          <div class="bg-dark-base p-3 rounded-xl border border-dark-border">
+          <div class="bg-dark-base p-3 rounded-xl border border-white/5">
             <div class="text-[10px] text-slate-500 uppercase font-mono">Budget Ceiling</div>
             <div id="modal-buyer-budget" class="text-xs text-white font-medium truncate mt-0.5">--</div>
           </div>
-          <div class="bg-dark-base p-3 rounded-xl border border-dark-border">
+          <div class="bg-dark-base p-3 rounded-xl border border-white/5">
             <div class="text-[10px] text-slate-500 uppercase font-mono">Preferred Area</div>
             <div id="modal-buyer-area" class="text-xs text-white font-medium truncate mt-0.5">--</div>
           </div>
         </div>
 
         <!-- Readiness Score Banner -->
-        <div class="bg-dark-base p-4 rounded-xl border border-dark-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="bg-dark-base p-4 rounded-xl border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div class="text-[11px] text-slate-400">Current Buyer Readiness</div>
+            <div class="text-[11px] text-slate-400 font-mono">Evaluated Lead Status</div>
             <div id="modal-readiness-label" class="text-sm font-bold text-white mt-0.5">--</div>
-            <div id="modal-rec-action" class="text-[11px] text-emerald-400 mt-1">Recommended Action: --</div>
+            <div id="modal-rec-action" class="text-[11px] text-emerald-400 mt-1 font-mono">Next Step: --</div>
           </div>
           <div class="flex items-center gap-3">
-            <div id="modal-score-circle" class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col items-center justify-center">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col items-center justify-center">
               <span id="modal-readiness-num" class="text-lg font-black text-emerald-400 num-font">--</span>
               <span class="text-[8px] font-mono text-slate-400">/ 100</span>
             </div>
           </div>
         </div>
 
-        <!-- Readiness Factor Breakdown -->
+        <!-- 5-Factor Score Breakdown -->
         <div>
           <h4 class="text-xs font-bold text-slate-300 uppercase font-mono mb-2">Intent Factor Breakdown</h4>
           <div id="modal-intent-bars" class="space-y-2">
@@ -624,7 +774,7 @@
 
         <!-- Target Properties: Saved & Inquiries -->
         <div>
-          <h4 class="text-xs font-bold text-slate-300 uppercase font-mono mb-2">Shortlisted Properties & Inquiries</h4>
+          <h4 class="text-xs font-bold text-slate-300 uppercase font-mono mb-2">Shortlisted Units & Site Visit Inquiries</h4>
           <div id="modal-target-properties" class="space-y-2">
             <!-- Dynamic properties -->
           </div>
@@ -632,7 +782,7 @@
 
       </div>
 
-      <div class="px-6 py-3 border-t border-dark-border bg-dark-base/50 flex items-center justify-between">
+      <div class="px-6 py-3 border-t border-white/10 bg-[#0C111C] flex items-center justify-between">
         <button id="modal-download-profile-btn" class="text-xs text-slate-300 hover:text-white font-mono flex items-center gap-1.5 cursor-pointer">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -650,16 +800,20 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════ -->
-  <!-- MODAL: ITEMIZED BUILDER COST SHEET                     -->
+  <!-- MODAL: AUTHENTIC BUILDER COST SHEET                    -->
   <!-- ═══════════════════════════════════════════════════════ -->
   <div id="cost-sheet-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4" onclick="if(event.target===this)closeCostSheetModal()">
-    <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
-    <div class="modal-card relative w-full max-w-xl bg-dark-surface border border-dark-border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+    <div class="modal-container relative w-full max-w-2xl bg-[#101726] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
       
-      <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
+      <!-- Quotation Header -->
+      <div class="px-6 py-4 border-b border-white/10 bg-[#0C111C] flex items-center justify-between">
         <div>
-          <h3 id="cs-project-title" class="text-lg font-bold text-white">Itemized Builder Cost Sheet</h3>
-          <p id="cs-unit-subtitle" class="text-xs text-slate-400 font-mono">Unit ID · Direct developer pricing</p>
+          <div class="flex items-center gap-2">
+            <h3 id="cs-project-title" class="text-base font-bold text-white">Project Name</h3>
+            <span id="cs-rera-id" class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">TS-RERA</span>
+          </div>
+          <p id="cs-unit-subtitle" class="text-xs text-slate-400 font-mono mt-0.5">Unit details</p>
         </div>
         <button onclick="closeCostSheetModal()" class="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -669,32 +823,69 @@
         </button>
       </div>
 
-      <div class="p-6 overflow-y-auto space-y-4 text-xs">
-        <div class="border border-dark-border rounded-xl overflow-hidden">
+      <div class="p-6 overflow-y-auto space-y-5 text-xs">
+        
+        <!-- Spatial Efficiency Metrics Banner -->
+        <div class="grid grid-cols-4 gap-2.5 p-3 rounded-xl bg-dark-base border border-white/5 text-center">
+          <div>
+            <div class="text-[9px] font-mono text-slate-500 uppercase">Super Built-up</div>
+            <div id="cs-sbu-val" class="text-xs font-bold font-mono text-slate-200 mt-0.5">-- sqft</div>
+          </div>
+          <div>
+            <div class="text-[9px] font-mono text-slate-500 uppercase">True Carpet Area</div>
+            <div id="cs-carpet-val" class="text-xs font-bold font-mono text-emerald-400 mt-0.5">-- sqft</div>
+          </div>
+          <div>
+            <div class="text-[9px] font-mono text-slate-500 uppercase">Carpet Efficiency</div>
+            <div id="cs-eff-val" class="text-xs font-bold font-mono text-white mt-0.5">--%</div>
+          </div>
+          <div>
+            <div class="text-[9px] font-mono text-slate-500 uppercase">Loading Markup</div>
+            <div id="cs-loading-val" class="text-xs font-bold font-mono text-slate-400 mt-0.5">--%</div>
+          </div>
+        </div>
+
+        <!-- Ledger Table -->
+        <div class="rounded-xl border border-white/5 overflow-hidden">
           <table class="w-full text-left">
-            <tbody id="cs-table-body" class="divide-y divide-dark-border">
+            <tbody id="cs-table-body" class="divide-y divide-white/5">
               <!-- Rendered dynamically -->
             </tbody>
           </table>
         </div>
 
-        <div class="p-3 bg-dark-base rounded-xl border border-dark-border flex items-center justify-between">
-          <span class="text-slate-400 text-xs">Zero Broker Guarantee</span>
-          <span class="text-emerald-400 text-xs font-mono font-semibold">Zero Commission · Direct Developer ERP</span>
+        <!-- Net Total Summary Box -->
+        <div class="p-4 rounded-xl bg-[#6D001A]/20 border border-[#6D001A]/40 flex items-center justify-between">
+          <div>
+            <div class="text-[11px] font-mono text-slate-300">Total Out-the-Door Price (All-Inclusive)</div>
+            <div id="cs-total-cr" class="text-2xl font-black num-font text-white mt-0.5">₹-- Cr</div>
+            <div id="cs-effective-sqft" class="text-[10px] font-mono text-emerald-400 mt-0.5">₹--/sqft carpet</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] font-mono text-slate-400 uppercase">Gross INR</div>
+            <div id="cs-total-inr" class="text-base font-bold font-mono text-slate-200">₹--</div>
+            <div class="text-[9px] font-mono text-slate-500 mt-0.5">Includes 5% GST & Amenities</div>
+          </div>
         </div>
+
       </div>
 
-      <div class="px-6 py-3 border-t border-dark-border bg-dark-base/50 flex items-center justify-between">
-        <button id="cs-download-btn" class="text-xs text-slate-300 hover:text-white font-mono flex items-center gap-1.5 cursor-pointer">
+      <div class="px-6 py-3 border-t border-white/10 bg-[#0C111C] flex items-center justify-between">
+        <button id="cs-download-btn" class="text-xs text-white font-mono flex items-center gap-1.5 cursor-pointer bg-brand hover:bg-brand-hover px-3 py-1.5 rounded-lg transition">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          <span>Download Cost Sheet (CSV)</span>
+          <span>Download Cost Sheet (.CSV)</span>
         </button>
-        <button onclick="closeCostSheetModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition cursor-pointer">
-          Close
+        <button onclick="window.print()" class="text-xs text-slate-300 hover:text-white font-mono flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          <span>Print Quotation</span>
         </button>
       </div>
 
@@ -702,16 +893,16 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════ -->
-  <!-- MODAL: MANUAL PROPERTY & UNIT ENTRY                    -->
+  <!-- MODAL: MANUAL PROPERTY REGISTRATION                    -->
   <!-- ═══════════════════════════════════════════════════════ -->
   <div id="add-property-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4" onclick="if(event.target===this)closeAddPropertyModal()">
-    <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
-    <div class="modal-card relative w-full max-w-2xl bg-dark-surface border border-dark-border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+    <div class="modal-container relative w-full max-w-3xl bg-[#101726] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
       
-      <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
+      <div class="px-6 py-4 border-b border-white/10 bg-[#0C111C] flex items-center justify-between">
         <div>
-          <h3 class="text-lg font-bold text-white">Manual Property & Unit Entry</h3>
-          <p class="text-xs text-slate-400">Register new verified real estate development records directly into Supabase</p>
+          <h3 class="text-base font-bold text-white">Register Verified Property Unit</h3>
+          <p class="text-xs text-slate-400 font-mono mt-0.5">Inserts project and unit specifications directly into PostgreSQL (Supabase)</p>
         </div>
         <button onclick="closeAddPropertyModal()" class="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -721,149 +912,154 @@
         </button>
       </div>
 
-      <form id="add-property-form" onsubmit="submitNewProperty(event)" class="p-6 overflow-y-auto space-y-4 text-xs">
+      <form onsubmit="submitNewProperty(event)" class="overflow-y-auto p-6 space-y-6 text-xs">
         
-        <!-- Project Section -->
+        <!-- Section 1: Project & Location Metadata -->
         <div>
-          <h4 class="text-xs font-bold text-slate-300 uppercase font-mono mb-2.5">1. Project & Compliance</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold mb-3">
+            1. Project & Regulatory Approval
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label class="block text-slate-400 font-medium mb-1">Project Name *</label>
+              <label class="block text-slate-300 font-medium mb-1">Project Name</label>
               <input type="text" name="project_name" required placeholder="e.g. My Home Tarkshya"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
             </div>
             <div>
-              <label class="block text-slate-400 font-medium mb-1">Developer *</label>
+              <label class="block text-slate-300 font-medium mb-1">Developer / Builder</label>
               <input type="text" name="developer" required placeholder="e.g. My Home Group"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
             </div>
             <div>
-              <label class="block text-slate-400 font-medium mb-1">Micro-Market *</label>
-              <select name="micro_market" required
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-slate-400">
+              <label class="block text-slate-300 font-medium mb-1">Micro-Market Node</label>
+              <select name="micro_market" required class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
                 <option value="Tellapur">Tellapur</option>
                 <option value="Kokapet">Kokapet</option>
-                <option value="Nanakramguda">Nanakramguda</option>
+                <option value="Financial District">Financial District</option>
                 <option value="Puppalguda">Puppalguda</option>
-                <option value="Kollur">Kollur</option>
+                <option value="Kondapur">Kondapur</option>
+                <option value="Nanakramguda">Nanakramguda</option>
               </select>
             </div>
             <div>
-              <label class="block text-slate-400 font-medium mb-1">TS-RERA Registration ID *</label>
-              <input type="text" name="rera_id" required placeholder="e.g. P02400005128"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+              <label class="block text-slate-300 font-medium mb-1">TS-RERA Registration ID</label>
+              <input type="text" name="rera_id" required placeholder="e.g. P02400005724"
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Handover Year</label>
+              <input type="number" name="handover_year" value="2026" min="2024" max="2032" required
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
             </div>
           </div>
         </div>
 
-        <!-- Unit Architectural Details -->
-        <div class="pt-2 border-t border-dark-border">
-          <h4 class="text-xs font-bold text-slate-300 uppercase font-mono mb-2.5">2. Unit Blueprint & Area</h4>
+        <!-- Section 2: Spatial & Unit Specs -->
+        <div>
+          <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold mb-3">
+            2. Unit Blueprint & Spatial Dimensions
+          </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
-              <label class="block text-slate-400 font-medium mb-1">Tower</label>
-              <input type="text" name="tower" required placeholder="Tower 1" value="Tower 1"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+              <label class="block text-slate-300 font-medium mb-1">Tower</label>
+              <input type="text" name="tower" required placeholder="e.g. Tower 3"
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
             </div>
             <div>
-              <label class="block text-slate-400 font-medium mb-1">Floor Number</label>
-              <input type="number" name="floor" required min="1" max="60" value="8"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+              <label class="block text-slate-300 font-medium mb-1">Floor Level</label>
+              <input type="number" name="floor" value="16" min="1" max="65" required
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
             </div>
             <div>
-              <label class="block text-slate-400 font-medium mb-1">BHK Configuration</label>
-              <select name="bhk" required
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-slate-400">
-                <option value="2.0">2 BHK</option>
+              <label class="block text-slate-300 font-medium mb-1">BHK Configuration</label>
+              <select name="bhk" required class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+                <option value="2">2 BHK</option>
                 <option value="2.5">2.5 BHK</option>
-                <option value="3.0" selected>3 BHK</option>
+                <option value="3" selected>3 BHK</option>
                 <option value="3.5">3.5 BHK</option>
-                <option value="4.0">4 BHK</option>
+                <option value="4">4 BHK</option>
               </select>
             </div>
             <div>
-              <label class="block text-slate-400 font-medium mb-1">Main Facing</label>
-              <select name="facing" required
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-slate-400">
+              <label class="block text-slate-300 font-medium mb-1">Balcony Orientation</label>
+              <select name="facing" class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
                 <option value="East">East</option>
                 <option value="North">North</option>
                 <option value="West">West</option>
                 <option value="South">South</option>
               </select>
             </div>
-
             <div>
-              <label class="block text-slate-400 font-medium mb-1">Super Built-up (sqft) *</label>
-              <input type="number" name="super_built_up_sqft" id="inp-sbu" required value="1850" min="500" max="6000" oninput="calculateUnitCostPreview()"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+              <label class="block text-slate-300 font-medium mb-1">Super Built-up (SBU sqft)</label>
+              <input type="number" id="inp-sbu" name="super_built_up_sqft" value="1850" oninput="calculateUnitCostPreview()" required
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
             </div>
             <div>
-              <label class="block text-slate-400 font-medium mb-1">True Carpet Area (sqft) *</label>
-              <input type="number" name="carpet_area_sqft" id="inp-carpet" required value="1380" min="300" max="5000" oninput="calculateUnitCostPreview()"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+              <label class="block text-slate-300 font-medium mb-1">True Carpet Area (sqft)</label>
+              <input type="number" id="inp-carpet" name="carpet_area_sqft" value="1450" oninput="calculateUnitCostPreview()" required
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
             </div>
             <div>
-              <label class="block text-slate-400 font-medium mb-1">Balcony Sqft</label>
-              <input type="number" name="balcony_sqft" value="85"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+              <label class="block text-slate-300 font-medium mb-1">Balcony Area (sqft)</label>
+              <input type="number" name="balcony_sqft" value="120"
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
             </div>
-            <div>
-              <label class="block text-slate-400 font-medium mb-1">Handover Year</label>
-              <input type="number" name="handover_year" value="2026" min="2024" max="2032"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
-            </div>
-          </div>
-
-          <div class="flex items-center gap-4 mt-3">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" name="is_corner_unit" id="inp-corner" onchange="calculateUnitCostPreview()" class="rounded bg-dark-base border-dark-border text-brand focus:ring-0">
-              <span class="text-slate-300">Corner Unit (Dual ventilation)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" name="has_morning_sunlight" checked class="rounded bg-dark-base border-dark-border text-brand focus:ring-0">
-              <span class="text-slate-300">Morning Sunlight on Balcony</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Pricing Details -->
-        <div class="pt-2 border-t border-dark-border">
-          <h4 class="text-xs font-bold text-slate-300 uppercase font-mono mb-2.5">3. Transparent Builder Cost Sheet</h4>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <div>
-              <label class="block text-slate-400 font-medium mb-1">Base Rate (₹/sqft) *</label>
-              <input type="number" name="base_rate_per_sqft" id="inp-base-rate" required value="7500" min="3000" max="35000" oninput="calculateUnitCostPreview()"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
-            </div>
-            <div>
-              <label class="block text-slate-400 font-medium mb-1">Car Parking Charges (₹)</label>
-              <input type="number" name="car_parking_charges" id="inp-parking" value="500000" oninput="calculateUnitCostPreview()"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
-            </div>
-            <div>
-              <label class="block text-slate-400 font-medium mb-1">Clubhouse Charges (₹)</label>
-              <input type="number" name="clubhouse_charges" id="inp-clubhouse" value="400000" oninput="calculateUnitCostPreview()"
-                class="w-full bg-dark-base border border-dark-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-slate-400">
+            <div class="flex flex-col justify-end gap-1.5 pb-1">
+              <label class="inline-flex items-center gap-2 cursor-pointer select-none text-slate-300">
+                <input type="checkbox" id="inp-corner" name="is_corner_unit" onchange="calculateUnitCostPreview()" class="rounded bg-slate-800 border-white/10 text-brand">
+                <span>Corner Unit</span>
+              </label>
+              <label class="inline-flex items-center gap-2 cursor-pointer select-none text-slate-300">
+                <input type="checkbox" name="has_morning_sunlight" checked class="rounded bg-slate-800 border-white/10 text-brand">
+                <span>Morning Sunlight</span>
+              </label>
             </div>
           </div>
         </div>
 
-        <!-- Live Price Calculation Box -->
-        <div class="p-3.5 bg-dark-base rounded-xl border border-dark-border flex items-center justify-between">
+        <!-- Section 3: Financial Rate Card & Itemized Pricing -->
+        <div>
+          <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold mb-3">
+            3. Financial Rate Card & Charges
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Base Rate per Sqft (INR)</label>
+              <input type="number" id="inp-base-rate" name="base_rate_per_sqft" value="7500" oninput="calculateUnitCostPreview()" required
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Car Parking (2 Covered Slots)</label>
+              <input type="number" id="inp-parking" name="car_parking_charges" value="500000" oninput="calculateUnitCostPreview()"
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Clubhouse & Amenities Fee</label>
+              <input type="number" id="inp-clubhouse" name="clubhouse_charges" value="400000" oninput="calculateUnitCostPreview()"
+                class="w-full bg-dark-base border border-white/10 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-slate-400">
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Calculation Preview -->
+        <div class="p-4 rounded-xl bg-dark-base border border-white/10 flex items-center justify-between">
           <div>
-            <div class="text-[10px] text-slate-500 uppercase font-mono">Calculated Total (All-Inclusive with 5% GST)</div>
-            <div id="preview-total-price" class="text-base font-extrabold text-white num-font mt-0.5">₹1.49 Cr · ₹1,49,12,500</div>
+            <div class="text-[10px] font-mono text-slate-400 uppercase">Estimated Total Out-the-Door Price (incl. 5% GST)</div>
+            <div id="preview-total-price" class="text-xl font-black num-font text-white mt-0.5">₹1.88 Cr (₹1,88,25,000)</div>
           </div>
           <div class="text-right">
-            <div class="text-[10px] text-slate-500 uppercase font-mono">Usable Efficiency</div>
-            <div id="preview-efficiency" class="text-xs font-bold text-emerald-400 num-font mt-0.5">74.6% Carpet</div>
+            <span id="preview-efficiency" class="px-2.5 py-1 rounded text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              78.4% Carpet
+            </span>
           </div>
         </div>
 
-        <div class="pt-2">
-          <button type="submit" id="btn-save-property"
-            class="w-full py-3 px-4 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold uppercase tracking-wider transition cursor-pointer shadow-md">
-            Save Verified Property Record
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+          <button type="button" onclick="closeAddPropertyModal()" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium transition cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" id="btn-save-property" class="px-6 py-2 rounded-xl bg-[#6D001A] hover:bg-[#8A0021] text-white font-semibold shadow-md transition cursor-pointer">
+            Save & Publish Unit
           </button>
         </div>
 

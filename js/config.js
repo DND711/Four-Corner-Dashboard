@@ -19,3 +19,17 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+function handleGlobalSearch(query) {
+  const buyerInp = document.getElementById('buyer-search-input');
+  if (buyerInp) {
+    buyerInp.value = query;
+    filterBuyersTable();
+  }
+  const propInp = document.getElementById('prop-search-query');
+  if (propInp) {
+    propInp.value = query;
+    filterPropertiesCatalog();
+  }
+}
+

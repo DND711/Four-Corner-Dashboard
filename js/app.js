@@ -1,4 +1,4 @@
-// Main Application Controller & View Orchestrator
+// Main Application Controller & Workspace Orchestrator
 
 document.addEventListener('DOMContentLoaded', () => {
   loadDashboardData();
@@ -12,32 +12,47 @@ function setupEventListeners() {
       menu.classList.add('hidden');
     }
   });
+
+  // Global search shortcut (Cmd/Ctrl + K)
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      const search = document.getElementById('global-search-input');
+      if (search) search.focus();
+    }
+  });
 }
 
 function switchView(viewName) {
-  ['buyers', 'inventory', 'analytics'].forEach(v => {
+  const views = ['buyers', 'inventory', 'analytics'];
+  views.forEach(v => {
     const viewEl = document.getElementById(`view-${v}`);
-    const tabBtn = document.getElementById(`tab-btn-${v}`);
-    const mobTab = document.getElementById(`mob-tab-${v}`);
+    const sideBtn = document.getElementById(`side-btn-${v}`);
+    const topBtn = document.getElementById(`tab-btn-${v}`);
 
     if (v === viewName) {
       if (viewEl) viewEl.classList.remove('hidden');
-      if (tabBtn) {
-        tabBtn.className = "px-3.5 py-1.5 rounded-lg transition text-white bg-slate-800 shadow-sm font-semibold";
+      if (sideBtn) {
+        sideBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-800/90 text-white font-semibold border border-white/10 shadow-sm transition";
       }
-      if (mobTab) {
-        mobTab.className = "py-1 font-semibold text-white";
+      if (topBtn) {
+        topBtn.className = "px-3.5 py-1.5 rounded-lg text-white bg-slate-800 shadow-sm font-semibold transition";
       }
     } else {
       if (viewEl) viewEl.classList.add('hidden');
-      if (tabBtn) {
-        tabBtn.className = "px-3.5 py-1.5 rounded-lg transition text-slate-400 hover:text-white";
+      if (sideBtn) {
+        sideBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-medium transition";
       }
-      if (mobTab) {
-        mobTab.className = "py-1 text-slate-400";
+      if (topBtn) {
+        topBtn.className = "px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition";
       }
     }
   });
+
+  // If switching to analytics, trigger analytics rendering
+  if (viewName === 'analytics') {
+    renderAnalyticsView();
+  }
 }
 
 function showToast(msg) {
@@ -91,9 +106,9 @@ async function loadDashboardData() {
     renderBuyersTable(allBuyers);
     renderInquiries(allInquiries);
     renderPropertiesGrid(allProperties);
-    renderAnalyticsTiers();
+    renderAnalyticsView();
 
-    showToast('Dashboard synchronized with live database');
+    showToast('Dashboard synchronized with Supabase');
   } catch (err) {
     console.warn('Dashboard sync error:', err);
     showToast('Offline mode: Using cached data');
