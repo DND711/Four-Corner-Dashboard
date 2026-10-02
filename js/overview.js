@@ -99,10 +99,10 @@ function renderRecentActivity() {
 // ─── Section 3: Buyer Intent Distribution ────────────────────────────────────
 function renderOverviewBuyerDistribution() {
   const tiers = [
-    { label: 'High Intent', range: 'Score 80 – 100', min: 80, max: 101, color: 'bg-emerald-500', textColor: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
-    { label: 'Active Evaluator', range: 'Score 60 – 79', min: 60, max: 80, color: 'bg-amber-500', textColor: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
-    { label: 'Active Searcher', range: 'Score 40 – 59', min: 40, max: 60, color: 'bg-blue-500', textColor: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200' },
-    { label: 'Casual Browser', range: 'Score below 40', min: 0, max: 40, color: 'bg-slate-400', textColor: 'text-slate-600', bg: 'bg-slate-50', border: 'border-slate-200' },
+    { label: 'Qualified', range: 'Score 80 – 100', min: 80, max: 101, color: 'bg-emerald-500', textColor: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+    { label: 'Active', range: 'Score 60 – 79', min: 60, max: 80, color: 'bg-amber-500', textColor: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
+    { label: 'Prospecting', range: 'Score 40 – 59', min: 40, max: 60, color: 'bg-blue-500', textColor: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200' },
+    { label: 'Early Stage', range: 'Score below 40', min: 0, max: 40, color: 'bg-slate-400', textColor: 'text-slate-600', bg: 'bg-slate-50', border: 'border-slate-200' },
   ];
 
   const total = allBuyers.length || 1;

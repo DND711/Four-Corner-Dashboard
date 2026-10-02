@@ -115,7 +115,7 @@
             <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
-          <span>Buyer Pipeline</span>
+          <span>Leads</span>
         </div>
         <span id="side-buyer-count" class="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100 text-slate-600 font-semibold">Live</span>
       </button>
@@ -126,7 +126,7 @@
           <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
           </svg>
-          <span>Inquiries</span>
+          <span>Visit Requests</span>
         </div>
         <span class="w-2 h-2 rounded-full bg-amber-500"></span>
       </button>
@@ -308,19 +308,19 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
           <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-            <div class="text-xs font-medium text-slate-500">Total Registered Buyers</div>
+            <div class="text-xs font-medium text-slate-500">Registered Leads</div>
             <div class="mt-2 text-3xl font-extrabold text-slate-900 num-font" id="ov-kpi-buyers">--</div>
             <div class="text-[11px] text-slate-400 mt-1">All users registered in the system</div>
           </div>
 
           <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-            <div class="text-xs font-medium text-slate-500">High-Intent Buyers</div>
+            <div class="text-xs font-medium text-slate-500">Qualified Leads</div>
             <div class="mt-2 text-3xl font-extrabold text-emerald-600 num-font" id="ov-kpi-intent">--</div>
-            <div class="text-[11px] text-slate-400 mt-1">Readiness score 60 or above</div>
+            <div class="text-[11px] text-slate-400 mt-1">Score 60 or above</div>
           </div>
 
           <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-            <div class="text-xs font-medium text-slate-500">Pending Site Visit Inquiries</div>
+            <div class="text-xs font-medium text-slate-500">Visit Requests</div>
             <div class="mt-2 text-3xl font-extrabold text-amber-600 num-font" id="ov-kpi-inquiries">--</div>
             <div class="text-[11px] text-slate-400 mt-1">Unresolved requests via AI channels</div>
           </div>
@@ -350,8 +350,8 @@
           <!-- Section 3: Buyer Intent Breakdown -->
           <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
             <div class="px-5 py-3.5 border-b border-slate-200">
-              <h3 class="text-sm font-bold text-slate-900">Buyer Intent Distribution</h3>
-              <p class="text-[11px] text-slate-500 mt-0.5">All registered buyers grouped by readiness score</p>
+              <h3 class="text-sm font-bold text-slate-900">Lead Qualification</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">All registered leads grouped by readiness score</p>
             </div>
             <div id="ov-buyer-distribution" class="px-5 py-2">
               <div class="py-6 text-center text-slate-400 font-mono text-xs">Loading...</div>
@@ -392,8 +392,8 @@
           <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
             <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
               <div>
-                <h3 class="text-sm font-bold text-slate-900">Open Inquiries</h3>
-                <p class="text-[11px] text-slate-500 mt-0.5">Site visit and pricing requests pending response</p>
+                <h3 class="text-sm font-bold text-slate-900">Pending Requests</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Site visit and pricing requests awaiting response</p>
               </div>
             </div>
             <div class="overflow-x-auto">
@@ -416,8 +416,8 @@
           <!-- Section 6: Top 5 Buyers by Score -->
           <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
             <div class="px-5 py-3.5 border-b border-slate-200">
-              <h3 class="text-sm font-bold text-slate-900">Top Buyers by Readiness Score</h3>
-              <p class="text-[11px] text-slate-500 mt-0.5">Top 5 buyers ranked by intent score</p>
+              <h3 class="text-sm font-bold text-slate-900">Top Leads by Score</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">Top 5 leads ranked by readiness score</p>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left">
@@ -468,7 +468,7 @@
           
           <div class="surface-card p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
-              <span>Active Buyer Leads</span>
+              <span>Registered Leads</span>
               <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
@@ -478,12 +478,12 @@
               <span id="kpi-total-buyers" class="text-3xl font-extrabold text-slate-900 num-font">--</span>
               <span class="text-[11px] font-mono text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">+14.2% / 7d</span>
             </div>
-            <p class="text-[11px] text-slate-500 mt-1">Verified searchers registered via OAuth</p>
+            <p class="text-[11px] text-slate-500 mt-1">Leads registered in the system</p>
           </div>
 
           <div class="surface-card p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
-              <span>High-Intent Cohort</span>
+              <span>Qualified Leads</span>
               <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 14 14" />
@@ -493,26 +493,26 @@
               <span id="kpi-high-intent" class="text-3xl font-extrabold text-emerald-600 num-font">--</span>
               <span class="text-[11px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">Score &ge; 60</span>
             </div>
-            <p class="text-[11px] text-slate-500 mt-1">Active site visits & financing ready</p>
+            <p class="text-[11px] text-slate-500 mt-1">Score 60 or above, site visit or finance ready</p>
           </div>
 
           <div class="surface-card p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
-              <span>Pending Site Visits</span>
+              <span>Visit Requests</span>
               <svg class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
               </svg>
             </div>
             <div class="mt-3 flex items-baseline justify-between">
               <span id="kpi-inquiries" class="text-3xl font-extrabold text-slate-900 num-font">--</span>
-              <span class="text-[11px] font-mono text-amber-700 font-semibold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">Direct Inquiries</span>
+              <span class="text-[11px] font-mono text-amber-700 font-semibold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">Open</span>
             </div>
-            <p class="text-[11px] text-slate-500 mt-1">Direct requests via AI assistants</p>
+            <p class="text-[11px] text-slate-500 mt-1">Received via AI assistant channels</p>
           </div>
 
           <div class="surface-card p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
-              <span>Pipeline Purchasing Power</span>
+              <span>Estimated Purchase Value</span>
               <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="12" y1="1" x2="12" y2="23" />
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -522,7 +522,7 @@
               <span id="kpi-pipeline-gmv" class="text-3xl font-extrabold text-slate-900 num-font">₹42.8 Cr</span>
               <span class="text-[11px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">Avg ₹2.1 Cr</span>
             </div>
-            <p class="text-[11px] text-slate-500 mt-1">Aggregated verified budget capacity</p>
+            <p class="text-[11px] text-slate-500 mt-1">Aggregated budget across all registered leads</p>
           </div>
 
         </div>
@@ -530,8 +530,8 @@
         <!-- Filter & Search Toolbar -->
         <div class="surface-card p-4 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 class="text-base font-bold text-slate-900 tracking-tight">Registered Buyer Pipeline</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Ranked by 5-dimension readiness: budget discipline, peak commute, carpet efficiency, and RERA due diligence.</p>
+            <h2 class="text-base font-bold text-slate-900 tracking-tight">Registered Leads</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Ranked by 5-dimension score: budget, commute, carpet area, RERA compliance, and site engagement.</p>
           </div>
 
           <div class="flex flex-wrap items-center gap-2.5">
@@ -540,11 +540,11 @@
 
             <select id="buyer-tier-filter" onchange="filterBuyersTable()"
               class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-slate-400 focus:bg-white transition">
-              <option value="ALL">All Intent Tiers</option>
-              <option value="HIGH_INTENT">High Intent (Score &ge; 80)</option>
-              <option value="SERIOUS_EVALUATOR">Active Evaluator (60 - 79)</option>
-              <option value="WARM_EXPLORER">Active Searcher (40 - 59)</option>
-              <option value="CASUAL_BROWSER">Casual Browser (&lt; 40)</option>
+              <option value="ALL">All Qualification Tiers</option>
+              <option value="HIGH_INTENT">Qualified (Score &ge; 80)</option>
+              <option value="SERIOUS_EVALUATOR">Active (60 - 79)</option>
+              <option value="WARM_EXPLORER">Prospecting (40 - 59)</option>
+              <option value="CASUAL_BROWSER">Early Stage (&lt; 40)</option>
             </select>
 
             <select id="buyer-market-filter" onchange="filterBuyersTable()"
@@ -570,18 +570,18 @@
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-50 text-slate-600 uppercase tracking-wider text-[10px] font-mono border-b border-slate-200">
                 <tr>
-                  <th class="py-3.5 px-4 font-semibold">Buyer & Contact</th>
-                  <th class="py-3.5 px-4 font-semibold">Search Criteria</th>
-                  <th class="py-3.5 px-4 font-semibold">Readiness Score</th>
-                  <th class="py-3.5 px-4 font-semibold">Intent Breakdown</th>
-                  <th class="py-3.5 px-4 font-semibold">Shortlisted & Inquiries</th>
-                  <th class="py-3.5 px-4 text-right font-semibold">Actions</th>
+                  <th class="py-3.5 px-4 font-semibold">Lead & Contact</th>
+                  <th class="py-3.5 px-4 font-semibold">Requirements</th>
+                  <th class="py-3.5 px-4 font-semibold">Score</th>
+                  <th class="py-3.5 px-4 font-semibold">Score Breakdown</th>
+                  <th class="py-3.5 px-4 font-semibold">Saved & Requests</th>
+                  <th class="py-3.5 px-4 text-right font-semibold">View</th>
                 </tr>
               </thead>
               <tbody id="buyers-table-body" class="divide-y divide-slate-100 text-slate-700">
                 <tr>
                   <td colspan="6" class="py-12 text-center text-slate-400 font-mono text-xs">
-                    Loading buyer leads from database...
+                    Loading registered leads...
                   </td>
                 </tr>
               </tbody>
@@ -593,8 +593,8 @@
         <div class="surface-card p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h3 class="text-sm font-bold text-slate-900 tracking-tight">Live Inquiries & Site Visit Queue</h3>
-              <p class="text-xs text-slate-500">Direct booking and information inquiries captured via AI assistant channels</p>
+              <h3 class="text-sm font-bold text-slate-900 tracking-tight">Visit Requests</h3>
+              <p class="text-xs text-slate-500">Site visit and information requests received via AI assistant channels</p>
             </div>
             <span id="inquiry-count-badge" class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
               0 Pending Requests
@@ -617,9 +617,9 @@
         <div class="surface-card p-4 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-3">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 class="text-base font-bold text-slate-900 tracking-tight">Verified Property Catalog</h2>
+              <h2 class="text-base font-bold text-slate-900 tracking-tight">Property Register</h2>
               <p class="text-xs text-slate-500 mt-0.5">
-                Every unit verified with TS-RERA registration, architectural carpet efficiency, and itemized out-the-door pricing.
+                All units verified with TS-RERA registration, architectural carpet area, and itemized out-the-door pricing.
               </p>
             </div>
 
@@ -816,53 +816,53 @@
 
         </div>
 
-        <!-- Funnel Distribution -->
+        <!-- Lead Qualification Distribution -->
         <div class="surface-card p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 mb-4">Buyer Readiness Funnel Distribution</h3>
+          <h3 class="text-sm font-bold text-slate-900 mb-4">Lead Qualification Distribution</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
               <div class="flex justify-between text-xs mb-1.5">
-                <span class="font-bold text-emerald-700">High Intent</span>
+                <span class="font-bold text-emerald-700">Qualified</span>
                 <span id="tier-count-high" class="font-mono text-slate-800 font-semibold">--</span>
               </div>
               <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden mb-2">
                 <div id="tier-bar-high" class="bg-emerald-500 h-2 rounded-full" style="width: 25%"></div>
               </div>
-              <p class="text-[10px] text-slate-500">Site visit requested & financing pre-approved</p>
+              <p class="text-[10px] text-slate-500">Site visit requested and financing pre-approved</p>
             </div>
 
             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
               <div class="flex justify-between text-xs mb-1.5">
-                <span class="font-bold text-amber-700">Active Evaluator</span>
+                <span class="font-bold text-amber-700">Active</span>
                 <span id="tier-count-serious" class="font-mono text-slate-800 font-semibold">--</span>
               </div>
               <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden mb-2">
                 <div id="tier-bar-serious" class="bg-amber-500 h-2 rounded-full" style="width: 40%"></div>
               </div>
-              <p class="text-[10px] text-slate-500">Inspecting blueprints & itemized cost sheets</p>
+              <p class="text-[10px] text-slate-500">Reviewing floor plans and cost sheets</p>
             </div>
 
             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
               <div class="flex justify-between text-xs mb-1.5">
-                <span class="font-bold text-blue-700">Active Searcher</span>
+                <span class="font-bold text-blue-700">Prospecting</span>
                 <span id="tier-count-warm" class="font-mono text-slate-800 font-semibold">--</span>
               </div>
               <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden mb-2">
                 <div id="tier-bar-warm" class="bg-blue-600 h-2 rounded-full" style="width: 20%"></div>
               </div>
-              <p class="text-[10px] text-slate-500">Filtering micro-markets and budget bands</p>
+              <p class="text-[10px] text-slate-500">Filtering micro-markets and budget range</p>
             </div>
 
             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
               <div class="flex justify-between text-xs mb-1.5">
-                <span class="font-bold text-slate-700">Casual Browser</span>
+                <span class="font-bold text-slate-700">Early Stage</span>
                 <span id="tier-count-casual" class="font-mono text-slate-800 font-semibold">--</span>
               </div>
               <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden mb-2">
                 <div id="tier-bar-casual" class="bg-slate-400 h-2 rounded-full" style="width: 15%"></div>
               </div>
-              <p class="text-[10px] text-slate-500">Initial exploratory searchers</p>
+              <p class="text-[10px] text-slate-500">Initial research phase</p>
             </div>
 
           </div>

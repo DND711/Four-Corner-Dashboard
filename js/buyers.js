@@ -45,20 +45,20 @@ function renderBuyersTable(buyers) {
   tbody.innerHTML = buyers.map(b => {
     const score = b.readiness_score || b.intent_score || 0;
     let badgeColor = 'bg-slate-100 text-slate-700 border-slate-200';
-    let tierLabel = 'Casual Browser';
+    let tierLabel = 'Early Stage';
     let dotColor = 'bg-slate-400';
 
     if (score >= 80) {
       badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      tierLabel = 'High Intent';
+      tierLabel = 'Qualified';
       dotColor = 'bg-emerald-500';
     } else if (score >= 60) {
       badgeColor = 'bg-amber-50 text-amber-700 border-amber-200';
-      tierLabel = 'Active Evaluator';
+      tierLabel = 'Active';
       dotColor = 'bg-amber-500';
     } else if (score >= 40) {
       badgeColor = 'bg-blue-50 text-blue-700 border-blue-200';
-      tierLabel = 'Active Searcher';
+      tierLabel = 'Prospecting';
       dotColor = 'bg-blue-500';
     }
 
@@ -128,10 +128,10 @@ function renderBuyersTable(buyers) {
         <!-- Shortlisted & Inquiries -->
         <td class="py-3 px-4 font-mono text-[11px]">
           <div class="text-slate-700">
-            <span class="font-bold text-slate-900">${b.saved_units_count || 0}</span> saved units
+            <span class="font-bold text-slate-900">${b.saved_units_count || 0}</span> saved
           </div>
           <div class="text-slate-500 text-[10px] mt-0.5">
-            <span class="text-amber-600 font-bold">${b.inquiries_count || 0}</span> inquiries
+            <span class="text-amber-600 font-bold">${b.inquiries_count || 0}</span> requests
           </div>
         </td>
 

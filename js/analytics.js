@@ -225,10 +225,10 @@ function renderBuyerReadinessDistribution() {
     if (el) el.textContent = text;
   };
 
-  setEl('tier-count-high', `${high} buyers (${highPct}%)`);
-  setEl('tier-count-serious', `${serious} buyers (${seriousPct}%)`);
-  setEl('tier-count-warm', `${warm} buyers (${warmPct}%)`);
-  setEl('tier-count-casual', `${casual} buyers (${casualPct}%)`);
+  setEl('tier-count-high', `${high} leads (${highPct}%)`);
+  setEl('tier-count-serious', `${serious} leads (${seriousPct}%)`);
+  setEl('tier-count-warm', `${warm} leads (${warmPct}%)`);
+  setEl('tier-count-casual', `${casual} leads (${casualPct}%)`);
 
   const setBar = (id, pct) => {
     const el = document.getElementById(id);
