@@ -1,4 +1,5 @@
 // Market Intelligence, Micro-Market Benchmarks, and Developer Transparency Metrics
+// Covers all Hyderabad micro-markets
 
 const MICRO_MARKET_BENCHMARKS = [
   {

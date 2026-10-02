@@ -96,7 +96,7 @@ function renderBuyersTable(buyers) {
 
         <!-- Search Criteria -->
         <td class="py-3 px-4 font-mono">
-          <div class="font-semibold text-slate-800">${escapeHtml(b.micro_market_pref || 'West Corridor')}</div>
+          <div class="font-semibold text-slate-800">${escapeHtml(b.micro_market_pref || 'Hyderabad')}</div>
           <div class="text-[11px] text-slate-500 mt-0.5">
             Budget: <strong class="text-slate-900">₹${b.budget_max_cr ? b.budget_max_cr + ' Cr' : 'Flexible'}</strong>
           </div>

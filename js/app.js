@@ -24,7 +24,8 @@ function setupEventListeners() {
 }
 
 function switchView(viewName) {
-  const views = ['buyers', 'inventory', 'analytics'];
+  const views = ['overview', 'buyers', 'inventory', 'analytics'];
+
   views.forEach(v => {
     const viewEl = document.getElementById(`view-${v}`);
     const sideBtn = document.getElementById(`side-btn-${v}`);
@@ -49,9 +50,12 @@ function switchView(viewName) {
     }
   });
 
-  // If switching to analytics, trigger analytics rendering
+  // Trigger view-specific rendering
   if (viewName === 'analytics') {
     renderAnalyticsView();
+  }
+  if (viewName === 'overview') {
+    renderOverview();
   }
 }
 
@@ -101,12 +105,13 @@ async function loadDashboardData() {
       console.warn('Could not load properties catalog:', e);
     }
 
-    // Update UI components
+    // Update all views
     renderKPIs();
     renderBuyersTable(allBuyers);
     renderInquiries(allInquiries);
     renderPropertiesGrid(allProperties);
     renderAnalyticsView();
+    renderOverview(); // Overview is the default view
 
     showToast('Dashboard synchronized with Supabase');
   } catch (err) {
