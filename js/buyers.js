@@ -184,13 +184,16 @@ function renderInquiries(inquiries) {
   if (!inquiries || inquiries.length === 0) {
     container.innerHTML = `
       <div class="p-6 text-center text-slate-400 font-mono text-xs bg-slate-50 rounded-xl border border-slate-200">
-        No active site visit or pricing inquiries in queue.
+        No active developer pricing or inventory allocation inquiries in queue.
       </div>`;
     return;
   }
 
   container.innerHTML = inquiries.map(inq => {
     const dateStr = inq.created_at ? new Date(inq.created_at).toLocaleString() : 'Recent';
+    const inqType = inq.inquiry_type === 'site_visit_request' || !inq.inquiry_type
+      ? 'Developer Direct'
+      : inq.inquiry_type.replace(/_/g, ' ');
     return `
       <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-start gap-3">
@@ -203,15 +206,15 @@ function renderInquiries(inquiries) {
             <div class="flex flex-wrap items-center gap-2">
               <span class="font-bold text-slate-900 text-xs">${escapeHtml(inq.project_name || 'Property Inquiry')}</span>
               <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold">Unit ${escapeHtml(inq.unit_id || 'Unit')}</span>
-              <span class="text-[10px] font-mono text-emerald-700 uppercase font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${escapeHtml(inq.inquiry_type || 'Site Visit')}</span>
+              <span class="text-[10px] font-mono text-emerald-700 uppercase font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${escapeHtml(inqType)}</span>
             </div>
-            <p class="text-xs text-slate-600 mt-1">"${escapeHtml(inq.user_message || 'Requested site visit and blueprint inspection.')}"</p>
+            <p class="text-xs text-slate-600 mt-1">"${escapeHtml(inq.user_message || 'Requested direct developer pricing and inventory allocation.')}"</p>
           </div>
         </div>
         <div class="text-right shrink-0 flex sm:flex-col items-center sm:items-end justify-between gap-2">
           <div class="text-[10px] font-mono text-slate-400">${dateStr}</div>
-          <button onclick="showToast('Site visit assignment confirmed')" class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition cursor-pointer font-bold">
-            Confirm Visit
+          <button onclick="showToast('Developer sales desk dispatch confirmed')" class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition cursor-pointer font-bold">
+            Dispatch to Builder
           </button>
         </div>
       </div>
@@ -233,16 +236,16 @@ function openBuyerModal(buyerId) {
   const score = buyer.readiness_score || buyer.intent_score || 0;
   document.getElementById('modal-readiness-num').textContent = score;
   document.getElementById('modal-readiness-label').textContent = buyer.readiness_label || 'Active lead evaluating verified properties';
-  document.getElementById('modal-rec-action').textContent = `Operational Next Step: ${buyer.recommended_action || 'Present floor plans and arrange builder visit'}`;
+  document.getElementById('modal-rec-action').textContent = `Operational Next Step: ${buyer.recommended_action || 'Connect directly with developer sales desk for inventory allocation'}`;
 
   // 5 Intent Dimensions
   const bd = buyer.intent_breakdown || {};
   const dimensions = [
-    { label: 'Budget Precision & Capital Readiness', val: bd.financial_precision ? bd.financial_precision.score : 0, max: 25 },
-    { label: 'Commute Alignment (8:30 AM Peak Tolerance)', val: bd.commute_alignment ? bd.commute_alignment.score : 0, max: 20 },
-    { label: 'Usable Carpet Ratio Scrutiny', val: bd.architectural_depth ? bd.architectural_depth.score : 0, max: 20 },
-    { label: 'TS-RERA 70% Escrow & Sanction Due Diligence', val: bd.legal_due_diligence ? bd.legal_due_diligence.score : 0, max: 15 },
-    { label: 'Action Signals & Site Visit Engagement', val: bd.commitment_signals ? bd.commitment_signals.score : 0, max: 20 },
+    { label: 'Budget & Price Range Readiness', val: bd.financial_precision ? bd.financial_precision.score : 0, max: 25 },
+    { label: 'Commute Alignment (Peak Traffic Check)', val: bd.commute_alignment ? bd.commute_alignment.score : 0, max: 20 },
+    { label: 'Carpet Area Efficiency Check', val: bd.architectural_depth ? bd.architectural_depth.score : 0, max: 20 },
+    { label: 'TS-RERA & Sanction Verification', val: bd.legal_due_diligence ? bd.legal_due_diligence.score : 0, max: 15 },
+    { label: 'Direct Developer Inquiries & Saved Units', val: bd.commitment_signals ? bd.commitment_signals.score : 0, max: 20 },
   ];
 
   const barsContainer = document.getElementById('modal-intent-bars');

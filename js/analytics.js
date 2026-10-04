@@ -58,7 +58,7 @@ const DEVELOPER_CARPET_INDEX = [
     efficiencyPct: 78.4,
     loadingPct: 21.6,
     reraId: 'P02400005724',
-    escrowStatus: 'Verified 70% Escrow'
+    complianceStatus: 'TS-RERA Registered'
   },
   {
     developer: 'My Home Group',
@@ -69,7 +69,7 @@ const DEVELOPER_CARPET_INDEX = [
     efficiencyPct: 75.2,
     loadingPct: 24.8,
     reraId: 'P02400001289',
-    escrowStatus: 'Verified 70% Escrow'
+    complianceStatus: 'TS-RERA Registered'
   },
   {
     developer: 'Aparna Constructions',
@@ -80,7 +80,7 @@ const DEVELOPER_CARPET_INDEX = [
     efficiencyPct: 73.7,
     loadingPct: 26.3,
     reraId: 'P02400003411',
-    escrowStatus: 'Verified 70% Escrow'
+    complianceStatus: 'TS-RERA Registered'
   },
   {
     developer: 'Rajapushpa Properties',
@@ -91,7 +91,7 @@ const DEVELOPER_CARPET_INDEX = [
     efficiencyPct: 75.7,
     loadingPct: 24.3,
     reraId: 'P02400004120',
-    escrowStatus: 'Verified 70% Escrow'
+    complianceStatus: 'TS-RERA Registered'
   }
 ];
 
@@ -170,7 +170,7 @@ function renderDeveloperCarpetTable() {
       <td class="py-3 px-4 text-right">
         <span class="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-700 font-medium">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          ${d.escrowStatus}
+          ${d.complianceStatus || 'TS-RERA Registered'}
         </span>
       </td>
     </tr>

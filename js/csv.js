@@ -111,11 +111,11 @@ function exportSingleBuyerProfileCSV(buyer) {
     ['Overall Intent Score', `${buyer.readiness_score || buyer.intent_score || 0} / 100`],
     ['Readiness Tier', `"${buyer.buyer_tier || ''}"`],
     ['Readiness Label', `"${buyer.readiness_label || ''}"`],
-    ['Financial Precision Score', bd.financial_precision ? `${bd.financial_precision.score}/25` : '0/25'],
+    ['Budget Readiness Score', bd.financial_precision ? `${bd.financial_precision.score}/25` : '0/25'],
     ['Commute Alignment Score', bd.commute_alignment ? `${bd.commute_alignment.score}/20` : '0/20'],
-    ['Architectural Depth Score', bd.architectural_depth ? `${bd.architectural_depth.score}/20` : '0/20'],
-    ['Legal Due Diligence Score', bd.legal_due_diligence ? `${bd.legal_due_diligence.score}/15` : '0/15'],
-    ['Commitment Signals Score', bd.commitment_signals ? `${bd.commitment_signals.score}/20` : '0/20'],
+    ['Carpet Area & Plan Score', bd.architectural_depth ? `${bd.architectural_depth.score}/20` : '0/20'],
+    ['RERA & Legal Verification Score', bd.legal_due_diligence ? `${bd.legal_due_diligence.score}/15` : '0/15'],
+    ['Direct Inquiries Score', bd.commitment_signals ? `${bd.commitment_signals.score}/20` : '0/20'],
     ['Recommended Action', `"${buyer.recommended_action || ''}"`]
   ];
 
@@ -129,7 +129,7 @@ function exportAwarenessReportCSV() {
     ['Usable Carpet Area Validation', '82%', '"Buyers evaluating usable carpet area rather than gross built-up measurements"'],
     ['Peak Commute Validation', '78%', '"Travel time calculated using 8:30-10:00 AM peak traffic rather than off-peak estimates"'],
     ['Total Cost Review', '91%', '"Buyers reviewing total out-the-door costs including floor rise, GST, and infra charges"'],
-    ['TS-RERA Compliance Verification', '88%', '"Verification of project registration, approved layout plans, and escrow compliance"'],
+    ['TS-RERA Compliance Verification', '88%', '"Verification of project registration, approved layout plans, and statutory sanctions"'],
     ['Tellapur Demand Share', '42%', '"Demand for ORR Exit 2 corridor connectivity to Financial District"'],
     ['Kokapet Demand Share', '28%', '"Demand for high-rise developments near Neopolis"'],
     ['Nanakramguda Demand Share', '18%', '"Walk-to-work IT tech corridor demand"'],
