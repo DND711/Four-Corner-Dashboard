@@ -1170,6 +1170,63 @@ async function submitProjectOnboarding() {
     };
   });
 
+  // Helper to read file as base64 data URL
+  const readFileAsDataUrl = (file) => {
+    return new Promise((resolve) => {
+      if (!file) return resolve('');
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // 1. Process Master Layout Plan
+  let masterPlanUrl = '';
+  if (fcOnboardingState.files && fcOnboardingState.files.masterPlan) {
+    masterPlanUrl = await readFileAsDataUrl(fcOnboardingState.files.masterPlan);
+  }
+
+  // 2. Process Cost Sheet
+  let costSheetUrl = '';
+  if (fcOnboardingState.files && fcOnboardingState.files.builderCostSheet) {
+    costSheetUrl = await readFileAsDataUrl(fcOnboardingState.files.builderCostSheet);
+  }
+
+  // 3. Process RERA Certificate
+  let reraCertUrl = '';
+  if (fcOnboardingState.files && fcOnboardingState.files.reraCert) {
+    reraCertUrl = await readFileAsDataUrl(fcOnboardingState.files.reraCert);
+  }
+
+  // 4. Process Walkthrough Video (URL or file)
+  let walkthroughVideoUrl = '';
+  const urlInput = document.getElementById('fc-walkthrough-video-url');
+  if (urlInput && urlInput.value.trim()) {
+    walkthroughVideoUrl = urlInput.value.trim();
+  } else if (fcOnboardingState.files && fcOnboardingState.files.walkthroughVideo) {
+    walkthroughVideoUrl = await readFileAsDataUrl(fcOnboardingState.files.walkthroughVideo);
+  }
+
+  // 5. Process Multi-Image Site Photos
+  const sitePhotosUrls = [];
+  if (fcOnboardingState.files && fcOnboardingState.files.sitePhotos && fcOnboardingState.files.sitePhotos.length > 0) {
+    for (const f of fcOnboardingState.files.sitePhotos) {
+      const dataUrl = await readFileAsDataUrl(f);
+      if (dataUrl) sitePhotosUrls.push(dataUrl);
+    }
+  }
+
+  // 6. Process Unit Typology Floor Plans
+  for (let i = 0; i < fcOnboardingState.unitTypes.length; i++) {
+    const u = fcOnboardingState.unitTypes[i];
+    if (u.floorPlanFile && unitsPayload[i]) {
+      unitsPayload[i].floor_plan_image_url = await readFileAsDataUrl(u.floorPlanFile);
+    }
+  }
+
+  const heroImageUrl = sitePhotosUrls.length > 0 ? sitePhotosUrls[0] : '';
+
   const payload = {
     project_name: projName,
     developer: dev,
@@ -1200,6 +1257,15 @@ async function submitProjectOnboarding() {
     construction_stage: constructionStage,
     road_condition: roadCondition,
     red_flag_notes: redFlagNotes,
+    hero_image_url: heroImageUrl,
+    gallery_images: sitePhotosUrls,
+    site_progress_photos: sitePhotosUrls,
+    walkthrough_video_url: walkthroughVideoUrl,
+    drone_footage_url: walkthroughVideoUrl,
+    brochure_pdf_url: costSheetUrl || reraCertUrl || '',
+    master_plan_url: masterPlanUrl,
+    cost_sheet_pdf_url: costSheetUrl,
+    rera_certificate_url: reraCertUrl,
     units: unitsPayload
   };
 

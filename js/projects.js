@@ -771,6 +771,33 @@ async function openPropertyDetail(projectId) {
     const handEl = document.getElementById('modal-project-handover');
     if (handEl) handEl.textContent = `${p.handover_year || 2026}`;
 
+    // Load and render interactive media tile (Photos slider, zoom, video tour)
+    const mediaTileContainer = document.getElementById('modal-interactive-media-tile');
+    if (mediaTileContainer) {
+      mediaTileContainer.innerHTML = '<div class="py-4 text-center text-xs text-slate-400">Loading visual intelligence tile...</div>';
+      fetch(`${API_BASE}/api/v1/properties/media/${encodeURIComponent(p.name || p.id)}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(mediaData => {
+          if (mediaData && mediaData.media_tile_html) {
+            mediaTileContainer.innerHTML = mediaData.media_tile_html;
+            const scripts = mediaTileContainer.getElementsByTagName('script');
+            for (let i = 0; i < scripts.length; i++) {
+              try {
+                eval(scripts[i].innerText);
+              } catch (e) {
+                console.warn('Media tile script execution error:', e);
+              }
+            }
+          } else {
+            mediaTileContainer.innerHTML = '';
+          }
+        })
+        .catch(e => {
+          console.warn('Failed to load media tile:', e);
+          mediaTileContainer.innerHTML = '';
+        });
+    }
+
     // Units table
     const unitsTbody = document.getElementById('modal-units-tbody');
     if (unitsTbody) {
