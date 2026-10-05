@@ -823,36 +823,6 @@ async function openPropertyDetail(projectId) {
       }
     }
 
-    // Buyers table
-    const buyersTbody = document.getElementById('modal-buyers-tbody');
-    if (buyersTbody) {
-      if (!p.buyers_seen || p.buyers_seen.length === 0) {
-        buyersTbody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400 font-sans">No buyer searches have surfaced this project yet.</td></tr>`;
-      } else {
-        buyersTbody.innerHTML = p.buyers_seen.map(b => {
-          const timeAgo = typeof formatTimeAgo === 'function' ? formatTimeAgo(b.timestamp) : (b.timestamp || 'Recently');
-          const filters = [];
-          if (b.micro_market) filters.push(b.micro_market);
-          if (b.bhk) filters.push(`${b.bhk} BHK`);
-          if (b.facing) filters.push(`${b.facing} Facing`);
-          const filterStr = filters.length > 0 ? filters.join(' · ') : 'Broad search';
-          const budget = (b.min_budget_cr || b.max_budget_cr) ? `₹${b.min_budget_cr || 0}-${b.max_budget_cr || '∞'} Cr` : 'Any Budget';
-
-          return `
-            <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
-              <td class="px-4 py-2.5 font-semibold text-slate-900">${escapeHtml(b.buyer_name || 'Anonymous Buyer')}</td>
-              <td class="px-4 py-2.5 text-slate-500 font-mono text-[11px]">${timeAgo}</td>
-              <td class="px-4 py-2.5 text-slate-700">${escapeHtml(filterStr)}</td>
-              <td class="px-4 py-2.5 font-mono text-slate-800">${budget}</td>
-              <td class="px-4 py-2.5 text-right font-mono text-[11px] text-slate-500">
-                ${b.email && b.email !== '—' ? escapeHtml(b.email) : (b.phone && b.phone !== '—' ? escapeHtml(b.phone) : '—')}
-              </td>
-            </tr>
-          `;
-        }).join('');
-      }
-    }
-
     const modal = document.getElementById('property-detail-modal');
     if (modal) modal.classList.remove('hidden');
   } catch (err) {
