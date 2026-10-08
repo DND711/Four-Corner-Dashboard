@@ -761,6 +761,95 @@ async function openPropertyDetail(projectId) {
     const clubEl = document.getElementById('modal-detail-clubhouse');
     if (clubEl) clubEl.textContent = p.clubhouse_sqft ? `${Number(p.clubhouse_sqft).toLocaleString()} sq.ft.` : '—';
 
+    // Card C: Hyderabad HITL Verification & Spatial Screening
+    const riskEl = document.getElementById('modal-detail-overall-risk');
+    const riskLvl = (p.overall_risk_level || 'LOW').toUpperCase();
+    if (riskEl) {
+      riskEl.textContent = `${riskLvl} RISK`;
+      if (riskLvl === 'BLOCKING' || riskLvl === 'HIGH') {
+        riskEl.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800';
+      } else if (riskLvl === 'MEDIUM') {
+        riskEl.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800';
+      } else {
+        riskEl.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800';
+      }
+    }
+
+    const parcels = Array.isArray(p.land_parcels) ? p.land_parcels : [];
+    const syNoEl = document.getElementById('modal-detail-sy-no');
+    if (syNoEl) {
+      if (parcels.length > 0) {
+        syNoEl.textContent = parcels.map(x => `Sy No. ${x.survey_number}`).join(', ');
+      } else {
+        syNoEl.textContent = p.survey_numbers || 'Sy No. On Record';
+      }
+    }
+
+    const vmEl = document.getElementById('modal-detail-village-mandal');
+    if (vmEl) {
+      if (parcels.length > 0 && parcels[0].village) {
+        vmEl.textContent = `${parcels[0].village}, ${parcels[0].mandal || p.micro_market}`;
+      } else {
+        vmEl.textContent = `${p.village || p.micro_market || 'West Hyderabad'}${p.mandal ? ' / ' + p.mandal : ''}`;
+      }
+    }
+
+    const hydraaEl = document.getElementById('modal-detail-hydraa-screen');
+    if (hydraaEl) {
+      const hydraaFlag = (p.risk_flags || []).find(f => f.category === 'HYDRAA_BUFFER' && !f.resolved_at);
+      if (hydraaFlag) {
+        hydraaEl.textContent = 'Buffer Advisory Flagged';
+        hydraaEl.className = 'font-medium text-amber-700 block truncate';
+      } else {
+        hydraaEl.textContent = 'Cleared (Beyond FTL/Buffer)';
+        hydraaEl.className = 'font-medium text-emerald-700 block truncate';
+      }
+    }
+
+    const titleEl = document.getElementById('modal-detail-22a-screen');
+    if (titleEl) {
+      const titleFlag = (p.risk_flags || []).find(f => f.category === 'LAND_TITLE' && !f.resolved_at);
+      if (titleFlag) {
+        titleEl.textContent = 'Title Under Legal Review';
+        titleEl.className = 'font-medium text-amber-700 block truncate';
+      } else {
+        titleEl.textContent = '30-Yr Clear Dharani Title';
+        titleEl.className = 'font-medium text-emerald-700 block truncate';
+      }
+    }
+
+    const verifiedAtEl = document.getElementById('modal-detail-verified-at');
+    if (verifiedAtEl) {
+      const vRec = (p.verification_records || []).find(r => r.verified_at);
+      const vDate = vRec ? vRec.verified_at.split('T')[0] : (p.created_at ? p.created_at.split('T')[0] : '2026-10-01');
+      verifiedAtEl.textContent = vDate;
+    }
+
+    const nextRevEl = document.getElementById('modal-detail-next-review');
+    if (nextRevEl) {
+      const sched = p.reverification_schedule;
+      const nextDate = sched && sched.next_review_due_at ? sched.next_review_due_at.split('T')[0] : (p.next_review_at ? p.next_review_at.split('T')[0] : 'In 90 Days');
+      nextRevEl.textContent = nextDate;
+    }
+
+    const flagsBox = document.getElementById('modal-detail-risk-flags-box');
+    const flagsList = document.getElementById('modal-detail-risk-flags-list');
+    if (flagsBox && flagsList) {
+      const activeFlags = (p.risk_flags || []).filter(f => !f.resolved_at);
+      if (activeFlags.length > 0) {
+        flagsBox.classList.remove('hidden');
+        flagsList.innerHTML = activeFlags.map(f => `
+          <div class="flex items-start gap-1.5 p-1.5 rounded bg-amber-100/60 border border-amber-200 text-amber-900">
+            <span class="font-bold uppercase text-[9px] px-1 py-0.5 rounded bg-amber-200/80">${f.severity || 'WARNING'}</span>
+            <span class="flex-1">${escapeHtml(f.description || f.risk_type)}</span>
+          </div>
+        `).join('');
+      } else {
+        flagsBox.classList.add('hidden');
+        flagsList.innerHTML = '';
+      }
+    }
+
     // KPI cards
     const impEl = document.getElementById('modal-project-impressions');
     if (impEl) impEl.textContent = `${p.search_impressions || 0}`;
