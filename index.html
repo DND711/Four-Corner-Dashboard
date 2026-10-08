@@ -180,6 +180,14 @@
             </div>
             <span id="side-pending-count" class="hidden text-[10px] font-mono bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded-full font-bold">0</span>
           </button>
+          <button onclick="openAddProjectModal()" id="side-btn-add-project"
+            class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#6D001A] hover:bg-[#6D001A]/10 font-bold transition cursor-pointer text-xs">
+            <svg class="w-4 h-4 shrink-0 text-[#6D001A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span>+ Add New Project</span>
+          </button>
         </div>
       </div>
 
@@ -1624,89 +1632,88 @@
         </div>
 
 
-      </div>
-    </main>
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!-- VIEW: ADD PROJECT & VERIFICATION ONBOARDING         -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <div id="view-add-project" class="hidden space-y-6">
 
-  </div>
+          <!-- Page Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="switchView('projects')" 
+                class="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition cursor-pointer" title="Back to Projects">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <div>
+                <h1 class="text-xl font-bold text-slate-900">Add Project for Verification</h1>
+                <p class="text-xs text-slate-400 mt-0.5">Submit developer project details, revenue survey parcels, and TS-RERA filings for independent audit.</p>
+              </div>
+            </div>
 
-  <!-- ═══════════════════════════════════════════════════════ -->
-  <!-- ═══════════════════════════════════════════════════════ -->
-  <!-- MODAL: FOUR CORNER PROPERTY ONBOARDING & VERIFICATION     -->
-  <!-- ═══════════════════════════════════════════════════════ -->
-  <div id="add-property-modal" class="fixed inset-0 z-50 flex items-start justify-center pt-4 sm:pt-6 pb-6 px-3 sm:px-4 bg-slate-900/60 backdrop-blur-sm hidden overflow-y-auto">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-5xl my-auto flex flex-col overflow-hidden max-h-[94vh]">
-
-      <!-- Modal Header -->
-      <div class="px-6 sm:px-8 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
-        <div>
-          <div class="flex items-center gap-2.5">
-            <img src="assets/logo.png" alt="Four Corner" class="w-8 h-8 rounded-xl object-cover shadow-xs border border-slate-200 shrink-0">
-            <div>
-              <h2 class="text-lg font-bold text-slate-900 leading-tight">Property Verification & Onboarding</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Four Corner Platform • Project Verification & Details</p>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-slate-400 hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Draft Mode Active
+              </span>
+              <button type="button" onclick="switchView('projects')"
+                class="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition cursor-pointer">
+                Cancel &amp; Return
+              </button>
             </div>
           </div>
-        </div>
-        <div class="flex items-center gap-3">
-          <button type="button" onclick="closeAddProjectModal()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-      </div>
 
-      <!-- 6-Step Visual Stepper Bar -->
-      <div class="px-4 sm:px-8 py-3.5 bg-white border-b border-slate-100 shrink-0 overflow-x-auto">
-        <div class="flex items-center justify-between min-w-[620px] max-w-4xl mx-auto gap-1">
+          <!-- 6-Step Visual Stepper Card -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs overflow-x-auto">
+            <div class="flex items-center justify-between min-w-[620px] max-w-4xl mx-auto gap-1">
 
-          <!-- Step 1 -->
-          <button type="button" onclick="goToOnboardingStep(1)" id="fc-step-nav-1" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
-            <div id="fc-step-circle-1" class="w-8 h-8 rounded-full bg-[#6D001A] text-white text-xs font-bold flex items-center justify-center ring-4 ring-[#6D001A]/20 shadow-md">1</div>
-            <span id="fc-step-label-1" class="hidden sm:block text-xs font-bold text-[#6D001A]">1. Identity</span>
-          </button>
-          <div id="fc-step-line-1" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+              <!-- Step 1 -->
+              <button type="button" onclick="goToOnboardingStep(1)" id="fc-step-nav-1" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
+                <div id="fc-step-circle-1" class="w-8 h-8 rounded-full bg-[#6D001A] text-white text-xs font-bold flex items-center justify-center ring-4 ring-[#6D001A]/20 shadow-md">1</div>
+                <span id="fc-step-label-1" class="hidden sm:block text-xs font-bold text-[#6D001A]">1. Identity</span>
+              </button>
+              <div id="fc-step-line-1" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
 
-          <!-- Step 2 -->
-          <button type="button" onclick="goToOnboardingStep(2)" id="fc-step-nav-2" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
-            <div id="fc-step-circle-2" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">2</div>
-            <span id="fc-step-label-2" class="hidden sm:block text-xs font-medium text-slate-400">2. Compliance</span>
-          </button>
-          <div id="fc-step-line-2" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+              <!-- Step 2 -->
+              <button type="button" onclick="goToOnboardingStep(2)" id="fc-step-nav-2" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
+                <div id="fc-step-circle-2" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">2</div>
+                <span id="fc-step-label-2" class="hidden sm:block text-xs font-medium text-slate-400">2. Compliance</span>
+              </button>
+              <div id="fc-step-line-2" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
 
-          <!-- Step 3 -->
-          <button type="button" onclick="goToOnboardingStep(3)" id="fc-step-nav-3" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
-            <div id="fc-step-circle-3" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">3</div>
-            <span id="fc-step-label-3" class="hidden sm:block text-xs font-medium text-slate-400">3. Land & Layout</span>
-          </button>
-          <div id="fc-step-line-3" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+              <!-- Step 3 -->
+              <button type="button" onclick="goToOnboardingStep(3)" id="fc-step-nav-3" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
+                <div id="fc-step-circle-3" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">3</div>
+                <span id="fc-step-label-3" class="hidden sm:block text-xs font-medium text-slate-400">3. Land &amp; Layout</span>
+              </button>
+              <div id="fc-step-line-3" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
 
-          <!-- Step 4 -->
-          <button type="button" onclick="goToOnboardingStep(4)" id="fc-step-nav-4" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
-            <div id="fc-step-circle-4" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">4</div>
-            <span id="fc-step-label-4" class="hidden sm:block text-xs font-medium text-slate-400">4. Typologies</span>
-          </button>
-          <div id="fc-step-line-4" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+              <!-- Step 4 -->
+              <button type="button" onclick="goToOnboardingStep(4)" id="fc-step-nav-4" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
+                <div id="fc-step-circle-4" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">4</div>
+                <span id="fc-step-label-4" class="hidden sm:block text-xs font-medium text-slate-400">4. Typologies</span>
+              </button>
+              <div id="fc-step-line-4" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
 
-          <!-- Step 5 -->
-          <button type="button" onclick="goToOnboardingStep(5)" id="fc-step-nav-5" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
-            <div id="fc-step-circle-5" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">5</div>
-            <span id="fc-step-label-5" class="hidden sm:block text-xs font-medium text-slate-400">5. Cost Breakdown</span>
-          </button>
-          <div id="fc-step-line-5" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+              <!-- Step 5 -->
+              <button type="button" onclick="goToOnboardingStep(5)" id="fc-step-nav-5" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
+                <div id="fc-step-circle-5" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">5</div>
+                <span id="fc-step-label-5" class="hidden sm:block text-xs font-medium text-slate-400">5. Cost Breakdown</span>
+              </button>
+              <div id="fc-step-line-5" class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
 
-          <!-- Step 6 -->
-          <button type="button" onclick="goToOnboardingStep(6)" id="fc-step-nav-6" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
-            <div id="fc-step-circle-6" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">6</div>
-            <span id="fc-step-label-6" class="hidden sm:block text-xs font-medium text-slate-400">6. Audit Clearance</span>
-          </button>
+              <!-- Step 6 -->
+              <button type="button" onclick="goToOnboardingStep(6)" id="fc-step-nav-6" class="flex items-center gap-2 group cursor-pointer focus:outline-none text-left">
+                <div id="fc-step-circle-6" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 text-xs font-semibold flex items-center justify-center">6</div>
+                <span id="fc-step-label-6" class="hidden sm:block text-xs font-medium text-slate-400">6. Audit Clearance</span>
+              </button>
 
-        </div>
-      </div>
+            </div>
+          </div>
 
-      <!-- Modal Body (Scrollable) -->
-      <div id="fc-onboarding-modal-scroll" class="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
-        <form id="fc-onboarding-form" onsubmit="event.preventDefault(); nextOnboardingStep();">
+          <!-- Main Form Card -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs p-6 sm:p-8" id="fc-onboarding-modal-scroll">
+            <form id="fc-onboarding-form" onsubmit="event.preventDefault(); nextOnboardingStep();">
 
           <!-- ═══════════════════════════════════════════════════════ -->
           <!-- SECTION 1: Basic Project Identity                       -->
@@ -2383,15 +2390,15 @@
         </form>
       </div>
 
-      <!-- Modal Footer -->
-      <div class="px-6 sm:px-8 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+      <!-- Bottom Action Buttons Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex items-center justify-between">
         <button type="button" onclick="prevOnboardingStep()"
-          class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 transition cursor-pointer">
+          class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-300 transition cursor-pointer">
           ← Back
         </button>
 
         <div class="flex items-center gap-3">
-          <button type="button" onclick="closeAddProjectModal()"
+          <button type="button" onclick="switchView('projects')"
             class="px-4 py-2.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-800 transition cursor-pointer">
             Cancel
           </button>
@@ -2403,6 +2410,10 @@
       </div>
 
     </div>
+
+      </div>
+    </main>
+
   </div>
 
   <!-- ═══════════════════════════════════════════════════════ -->

@@ -43,6 +43,7 @@ const VIEW_NAMES = [
   'project-demand',
   'demand-trends',
   'projects',
+  'add-project',
   'rera-compliance',
   'pending-review',
   'buyer-leads',
@@ -58,6 +59,7 @@ const ALL_SIDEBAR_BTN_IDS = [
   'side-btn-project-demand',
   'side-btn-demand-trends',
   'side-btn-projects',
+  'side-btn-add-project',
   'side-btn-rera-compliance',
   'side-btn-pending-review',
   'side-btn-buyer-leads',
@@ -73,27 +75,35 @@ function setActiveSidebarButton(activeId) {
     const isActive = id === activeId;
     if (isActive) {
       btn.classList.add('bg-[#6D001A]', 'text-white', 'font-semibold');
-      btn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100', 'font-medium');
+      btn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100', 'font-medium', 'text-[#6D001A]', 'hover:bg-[#6D001A]/10');
       const svg = btn.querySelector('svg');
       if (svg) {
         svg.classList.add('text-white');
-        svg.classList.remove('text-slate-400', 'text-amber-500', 'text-emerald-600');
+        svg.classList.remove('text-slate-400', 'text-amber-500', 'text-emerald-600', 'text-[#6D001A]');
       }
     } else {
       btn.classList.remove('bg-[#6D001A]', 'text-white', 'font-semibold');
-      btn.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100', 'font-medium');
+      if (id === 'side-btn-add-project') {
+        btn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100', 'font-medium');
+        btn.classList.add('text-[#6D001A]', 'hover:bg-[#6D001A]/10', 'font-bold');
+      } else {
+        btn.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100', 'font-medium');
+      }
       const svg = btn.querySelector('svg');
       if (svg) {
         svg.classList.remove('text-white');
         if (id === 'side-btn-pending-review') {
           svg.classList.add('text-amber-500');
-          svg.classList.remove('text-slate-400', 'text-emerald-600');
+          svg.classList.remove('text-slate-400', 'text-emerald-600', 'text-[#6D001A]');
         } else if (id === 'side-btn-rera-compliance') {
           svg.classList.add('text-emerald-600');
-          svg.classList.remove('text-slate-400', 'text-amber-500');
+          svg.classList.remove('text-slate-400', 'text-amber-500', 'text-[#6D001A]');
+        } else if (id === 'side-btn-add-project') {
+          svg.classList.add('text-[#6D001A]');
+          svg.classList.remove('text-slate-400', 'text-amber-500', 'text-emerald-600');
         } else {
           svg.classList.add('text-slate-400');
-          svg.classList.remove('text-amber-500', 'text-emerald-600');
+          svg.classList.remove('text-amber-500', 'text-emerald-600', 'text-[#6D001A]');
         }
       }
     }
@@ -141,6 +151,8 @@ function switchView(viewName, isFromSearch = false) {
     if (typeof renderDemandTrendsPage === 'function') renderDemandTrendsPage();
   } else if (viewName === 'projects') {
     renderProjectsRegistry();
+  } else if (viewName === 'add-project') {
+    if (typeof openAddProjectModal === 'function') openAddProjectModal();
   } else if (viewName === 'rera-compliance') {
     if (typeof renderReraComplianceView === 'function') renderReraComplianceView();
   } else if (viewName === 'pending-review') {

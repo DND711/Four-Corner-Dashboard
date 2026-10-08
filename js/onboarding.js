@@ -42,12 +42,20 @@ let fcOnboardingState = {
   }
 };
 
-// ─── Modal Open & Close ───────────────────────────────────────────────────────
+// ─── Modal / In-Page View Open & Close ───────────────────────────────────────────
 
 function openAddProjectModal() {
-  const modal = document.getElementById('add-property-modal');
-  if (!modal) return;
-  modal.classList.remove('hidden');
+  if (typeof switchView === 'function') {
+    const activeBtn = document.getElementById('side-btn-add-project');
+    const isAlreadyOnAddView = activeBtn && activeBtn.classList.contains('bg-[#6D001A]');
+    if (!isAlreadyOnAddView) {
+      switchView('add-project');
+      return;
+    }
+  }
+
+  const viewEl = document.getElementById('view-add-project') || document.getElementById('add-property-modal');
+  if (viewEl) viewEl.classList.remove('hidden');
 
   // Reset or initialize if clean
   if (fcOnboardingState.unitTypes.length === 0) {
@@ -58,8 +66,12 @@ function openAddProjectModal() {
 }
 
 function closeAddProjectModal() {
-  const modal = document.getElementById('add-property-modal');
-  if (modal) modal.classList.add('hidden');
+  if (typeof switchView === 'function') {
+    switchView('projects');
+  } else {
+    const viewEl = document.getElementById('view-add-project') || document.getElementById('add-property-modal');
+    if (viewEl) viewEl.classList.add('hidden');
+  }
 }
 
 function resetOnboardingForm() {
@@ -206,9 +218,10 @@ function goToOnboardingStep(step) {
     renderAuditSummarySection();
   }
 
-  // Scroll modal body to top smoothly
-  const modalScrollArea = document.getElementById('fc-onboarding-modal-scroll');
-  if (modalScrollArea) modalScrollArea.scrollTo({ top: 0, behavior: 'smooth' });
+  // Scroll main view to top smoothly
+  const mainScrollArea = document.querySelector('main') || document.getElementById('fc-onboarding-modal-scroll');
+  if (mainScrollArea) mainScrollArea.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function nextOnboardingStep() {
