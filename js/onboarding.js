@@ -211,6 +211,16 @@ function goToOnboardingStep(step) {
   }
 
 
+  // Update top action button label on step changes
+  const submitBtn = document.getElementById('fc-submit-onboarding-btn');
+  if (submitBtn) {
+    if (step === 6) {
+      submitBtn.innerHTML = `<span>Submit Project for Audit ✓</span>`;
+    } else {
+      submitBtn.innerHTML = `<span>Continue to Next Section →</span>`;
+    }
+  }
+
   // If entering section 5 or 6, trigger cost and review refresh
   if (step === 5) {
     recalculateCostEngine();
@@ -239,6 +249,10 @@ function nextOnboardingStep() {
 function prevOnboardingStep() {
   if (fcOnboardingState.currentStep > 1) {
     goToOnboardingStep(fcOnboardingState.currentStep - 1);
+  } else {
+    if (typeof switchView === 'function') {
+      switchView('projects');
+    }
   }
 }
 

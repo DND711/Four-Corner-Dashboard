@@ -1637,28 +1637,21 @@
         <!-- ═══════════════════════════════════════════════════ -->
         <div id="view-add-project" class="hidden space-y-6">
 
-          <!-- Page Header -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-              <button type="button" onclick="switchView('projects')" 
-                class="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition cursor-pointer" title="Back to Projects">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-              </button>
-              <div>
-                <h1 class="text-xl font-bold text-slate-900">Add Project for Verification</h1>
-                <p class="text-xs text-slate-400 mt-0.5">Submit developer project details, revenue survey parcels, and TS-RERA filings for independent audit.</p>
-              </div>
-            </div>
+          <!-- Action Buttons Bar (no container card) -->
+          <div class="flex items-center justify-between">
+            <button type="button" onclick="prevOnboardingStep()" id="fc-prev-onboarding-btn"
+              class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 transition cursor-pointer shadow-2xs">
+              ← Back
+            </button>
 
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-medium text-slate-400 hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Draft Mode Active
-              </span>
+            <div class="flex items-center gap-3">
               <button type="button" onclick="switchView('projects')"
-                class="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition cursor-pointer">
-                Cancel &amp; Return
+                class="px-4 py-2.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-800 transition cursor-pointer">
+                Cancel
+              </button>
+              <button type="button" id="fc-submit-onboarding-btn" onclick="nextOnboardingStep()"
+                class="px-5 py-2.5 rounded-xl bg-[#6D001A] hover:bg-[#520013] text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-2">
+                <span>Continue to Next Section →</span>
               </button>
             </div>
           </div>
@@ -2390,24 +2383,6 @@
         </form>
       </div>
 
-      <!-- Bottom Action Buttons Card -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex items-center justify-between">
-        <button type="button" onclick="prevOnboardingStep()"
-          class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-300 transition cursor-pointer">
-          ← Back
-        </button>
-
-        <div class="flex items-center gap-3">
-          <button type="button" onclick="switchView('projects')"
-            class="px-4 py-2.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-800 transition cursor-pointer">
-            Cancel
-          </button>
-          <button type="button" id="fc-submit-onboarding-btn" onclick="nextOnboardingStep()"
-            class="px-6 py-2.5 rounded-xl bg-[#6D001A] hover:bg-[#520013] text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-2">
-            <span>Continue to Next Section →</span>
-          </button>
-        </div>
-      </div>
 
     </div>
 
