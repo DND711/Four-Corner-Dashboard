@@ -118,6 +118,11 @@ function switchView(viewName, isFromSearch = false) {
     if (globalSearch && globalSearch.value) globalSearch.value = '';
   }
 
+  const standardContainer = document.getElementById('standard-views-container');
+  if (standardContainer) {
+    standardContainer.classList.toggle('hidden', viewName === 'add-project');
+  }
+
   VIEW_NAMES.forEach(v => {
     const viewEl  = document.getElementById(`view-${v}`);
     const topBtn  = document.getElementById(`tab-btn-${v}`);

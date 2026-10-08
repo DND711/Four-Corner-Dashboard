@@ -55,6 +55,9 @@ function openAddProjectModal() {
     }
   }
 
+  const standardContainer = document.getElementById('standard-views-container');
+  if (standardContainer) standardContainer.classList.add('hidden');
+
   const viewEl = document.getElementById('view-add-project') || document.getElementById('add-property-modal');
   if (viewEl) viewEl.classList.remove('hidden');
 
@@ -72,6 +75,8 @@ function closeAddProjectModal() {
   } else {
     const viewEl = document.getElementById('view-add-project') || document.getElementById('add-property-modal');
     if (viewEl) viewEl.classList.add('hidden');
+    const standardContainer = document.getElementById('standard-views-container');
+    if (standardContainer) standardContainer.classList.remove('hidden');
   }
 }
 
@@ -230,7 +235,7 @@ function goToOnboardingStep(step) {
     if (step === 6) {
       submitBtn.innerHTML = `<span>Submit Project for Audit ✓</span>`;
     } else {
-      submitBtn.innerHTML = `<span>Continue to Next Section →</span>`;
+      submitBtn.innerHTML = `<span>Continue →</span>`;
     }
   }
 
