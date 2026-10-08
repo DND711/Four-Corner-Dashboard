@@ -31,6 +31,7 @@ let fcOnboardingState = {
   walkthroughMode: 'url', // 'url' or 'file'
   unitCounter: 0,
   unitTypes: [],
+  activeDraftId: null,
   files: {
     reraCert: null,
     permitCert: null,
@@ -83,6 +84,7 @@ function resetOnboardingForm() {
     walkthroughMode: 'url',
     unitCounter: 0,
     unitTypes: [],
+    activeDraftId: null,
     files: {
       reraCert: null,
       permitCert: null,
@@ -211,6 +213,17 @@ function goToOnboardingStep(step) {
   }
 
 
+  // On Step 1: Back is NOT visible, only Cancel is visible on the left
+  // On Step 2+: Back with arrow is visible first, and Cancel next
+  const prevBtn = document.getElementById('fc-prev-onboarding-btn');
+  if (prevBtn) {
+    if (step === 1) {
+      prevBtn.classList.add('hidden');
+    } else {
+      prevBtn.classList.remove('hidden');
+    }
+  }
+
   // Update top action button label on step changes
   const submitBtn = document.getElementById('fc-submit-onboarding-btn');
   if (submitBtn) {
@@ -249,10 +262,6 @@ function nextOnboardingStep() {
 function prevOnboardingStep() {
   if (fcOnboardingState.currentStep > 1) {
     goToOnboardingStep(fcOnboardingState.currentStep - 1);
-  } else {
-    if (typeof switchView === 'function') {
-      switchView('projects');
-    }
   }
 }
 
@@ -1308,7 +1317,13 @@ async function submitProjectOnboarding() {
       await loadOverviewData();
     }
 
-    // 3. Close modal & reset form
+    // 3. Close modal, clear saved draft, & reset form
+    if (fcOnboardingState.activeDraftId) {
+      let drafts = getSavedDrafts();
+      drafts = drafts.filter(d => d.id !== fcOnboardingState.activeDraftId);
+      saveDraftsList(drafts);
+      fcOnboardingState.activeDraftId = null;
+    }
     closeAddProjectModal();
     resetOnboardingForm();
 
@@ -1373,8 +1388,351 @@ function initOnboardingModule() {
   if (mm) {
     mm.addEventListener('change', syncMicroMarketCoordinates);
   }
+
+  // Update sidebar saved draft badge
+  updateSidebarDraftCount();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initOnboardingModule();
 });
+
+// ─── Draft Management & Cancel Pop-up System ───────────────────────────────────
+
+const FC_DRAFTS_STORAGE_KEY = 'fc_saved_drafts_v1';
+
+function getSavedDrafts() {
+  try {
+    const raw = localStorage.getItem(FC_DRAFTS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error('Failed to parse saved drafts', e);
+    return [];
+  }
+}
+
+function saveDraftsList(drafts) {
+  try {
+    localStorage.setItem(FC_DRAFTS_STORAGE_KEY, JSON.stringify(drafts));
+    updateSidebarDraftCount();
+  } catch (e) {
+    console.error('Failed to save drafts list', e);
+  }
+}
+
+function updateSidebarDraftCount() {
+  const drafts = getSavedDrafts();
+  const countEl = document.getElementById('side-drafts-count');
+  if (countEl) {
+    countEl.textContent = drafts.length;
+    countEl.classList.toggle('hidden', drafts.length === 0);
+  }
+  const badgeEl = document.getElementById('drafts-count-badge');
+  if (badgeEl) {
+    badgeEl.textContent = `${drafts.length} Draft${drafts.length === 1 ? '' : 's'}`;
+  }
+}
+
+function handleOnboardingCancelClick() {
+  const modal = document.getElementById('fc-cancel-draft-modal');
+  if (!modal) {
+    if (typeof switchView === 'function') switchView('projects');
+    return;
+  }
+
+  // Set modal draft preview info
+  const projName = document.getElementById('fc-project-name')?.value?.trim() || 'Untitled Project';
+  const nameEl = document.getElementById('fc-modal-draft-project-name');
+  if (nameEl) nameEl.textContent = projName;
+
+  const stepEl = document.getElementById('fc-modal-draft-step-label');
+  if (stepEl) stepEl.textContent = `Step ${fcOnboardingState.currentStep} of 6`;
+
+  modal.classList.remove('hidden');
+}
+
+function closeCancelDraftModal() {
+  const modal = document.getElementById('fc-cancel-draft-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function saveDraftAndExit() {
+  const saved = saveCurrentDraft();
+  closeCancelDraftModal();
+  if (typeof showToast === 'function') {
+    showToast(`Draft saved: "${saved.projectName}". Resume anytime from Saved Drafts.`);
+  }
+  if (typeof switchView === 'function') {
+    switchView('saved-drafts');
+  }
+}
+
+function discardAndExit() {
+  closeCancelDraftModal();
+  fcOnboardingState.activeDraftId = null;
+  resetOnboardingForm();
+  if (typeof showToast === 'function') {
+    showToast('Changes discarded.');
+  }
+  if (typeof switchView === 'function') {
+    switchView('projects');
+  }
+}
+
+function saveDraftQuick() {
+  const saved = saveCurrentDraft();
+  if (typeof showToast === 'function') {
+    showToast(`Draft saved: "${saved.projectName}". Saved in Saved Drafts.`);
+  }
+}
+
+function serializeOnboardingFormData() {
+  const form = document.getElementById('fc-onboarding-form');
+  const values = {};
+  if (!form) return values;
+
+  const inputs = form.querySelectorAll('input, select, textarea');
+  inputs.forEach(el => {
+    if (!el.id) return;
+    if (el.type === 'checkbox' || el.type === 'radio') {
+      values[el.id] = { checked: el.checked, value: el.value, type: el.type };
+    } else if (el.type !== 'file') {
+      values[el.id] = { value: el.value, type: el.type };
+    }
+  });
+  return values;
+}
+
+function saveCurrentDraft() {
+  const drafts = getSavedDrafts();
+  const projName = document.getElementById('fc-project-name')?.value?.trim() || 'Untitled Project';
+  const devName = document.getElementById('fc-developer-name')?.value?.trim() || 'Unspecified Developer';
+  const microMarket = document.getElementById('fc-micro-market')?.value || 'Tellapur';
+  const reraNum = document.getElementById('fc-rera-number')?.value?.trim() || '';
+
+  const draftId = fcOnboardingState.activeDraftId || `draft_${Date.now()}`;
+  fcOnboardingState.activeDraftId = draftId;
+
+  const draftObj = {
+    id: draftId,
+    projectName: projName,
+    developer: devName,
+    microMarket: microMarket,
+    reraNumber: reraNum,
+    step: fcOnboardingState.currentStep || 1,
+    savedAt: new Date().toISOString(),
+    formData: serializeOnboardingFormData(),
+    state: {
+      isReraRegistered: fcOnboardingState.isReraRegistered,
+      hasOcIssued: fcOnboardingState.hasOcIssued,
+      walkthroughMode: fcOnboardingState.walkthroughMode,
+      unitTypes: JSON.parse(JSON.stringify(fcOnboardingState.unitTypes || []))
+    }
+  };
+
+  const existingIdx = drafts.findIndex(d => d.id === draftId);
+  if (existingIdx >= 0) {
+    drafts[existingIdx] = draftObj;
+  } else {
+    drafts.unshift(draftObj);
+  }
+
+  saveDraftsList(drafts);
+  return draftObj;
+}
+
+function restoreDraftData(draft) {
+  if (!draft) return;
+
+  // Restore form inputs
+  if (draft.formData) {
+    Object.keys(draft.formData).forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const data = draft.formData[id];
+      if (data.type === 'checkbox' || data.type === 'radio') {
+        el.checked = !!data.checked;
+      } else if (data.value !== undefined) {
+        el.value = data.value;
+      }
+    });
+  }
+
+  // Restore state flags
+  if (draft.state) {
+    if (typeof draft.state.isReraRegistered === 'boolean') {
+      setReraRegistered(draft.state.isReraRegistered);
+    }
+    if (typeof draft.state.hasOcIssued === 'boolean') {
+      setOcIssued(draft.state.hasOcIssued);
+    }
+    if (draft.state.walkthroughMode) {
+      setWalkthroughMode(draft.state.walkthroughMode);
+    }
+
+    // Restore unit typologies
+    fcOnboardingState.unitTypes = [];
+    const container = document.getElementById('fc-unit-typologies-list');
+    if (container) container.innerHTML = '';
+    if (Array.isArray(draft.state.unitTypes) && draft.state.unitTypes.length > 0) {
+      draft.state.unitTypes.forEach(u => addUnitTypology(u));
+    } else {
+      addUnitTypology({ name: '3BHK Luxury Elite', carpet: 1420, balcony: 120, sbu: 1980, tourUrl: '' });
+    }
+  }
+
+  fcOnboardingState.activeDraftId = draft.id;
+  syncMicroMarketCoordinates();
+  recalculateCostEngine();
+}
+
+function resumeDraft(draftId) {
+  const drafts = getSavedDrafts();
+  const draft = drafts.find(d => d.id === draftId);
+  if (!draft) {
+    if (typeof showToast === 'function') showToast('Draft not found.');
+    return;
+  }
+
+  restoreDraftData(draft);
+  if (typeof switchView === 'function') {
+    switchView('add-project');
+  } else {
+    openAddProjectModal();
+  }
+
+  goToOnboardingStep(draft.step || 1);
+  if (typeof showToast === 'function') {
+    showToast(`Resumed draft for "${draft.projectName}".`);
+  }
+}
+
+function deleteSavedDraft(draftId, event) {
+  if (event) event.stopPropagation();
+  if (!confirm('Are you sure you want to permanently delete this draft application?')) return;
+
+  let drafts = getSavedDrafts();
+  drafts = drafts.filter(d => d.id !== draftId);
+  saveDraftsList(drafts);
+
+  if (fcOnboardingState.activeDraftId === draftId) {
+    fcOnboardingState.activeDraftId = null;
+  }
+
+  renderSavedDraftsView();
+  if (typeof showToast === 'function') {
+    showToast('Draft deleted.');
+  }
+}
+
+function startFreshProjectApplication() {
+  fcOnboardingState.activeDraftId = null;
+  resetOnboardingForm();
+  if (typeof switchView === 'function') {
+    switchView('add-project');
+  } else {
+    openAddProjectModal();
+  }
+  goToOnboardingStep(1);
+}
+
+const STEP_TITLES = {
+  1: 'Identity & Promoter',
+  2: 'Compliance & Permits',
+  3: 'Land & Master Layout',
+  4: 'Unit Typologies',
+  5: 'Cost & Price Matrix',
+  6: 'Audit Clearance'
+};
+
+function renderSavedDraftsView() {
+  updateSidebarDraftCount();
+  const listContainer = document.getElementById('saved-drafts-list');
+  if (!listContainer) return;
+
+  const drafts = getSavedDrafts();
+  if (drafts.length === 0) {
+    listContainer.innerHTML = `
+      <div class="col-span-full bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-2xs space-y-3">
+        <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 text-slate-400 mx-auto flex items-center justify-center">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+        </div>
+        <h3 class="text-sm font-bold text-slate-800">No Draft Applications Saved</h3>
+        <p class="text-xs text-slate-400 max-w-md mx-auto">
+          When you click "Cancel" while creating or verifying a project and choose "Save Draft", your entered details, survey parcels, and unit configurations will be stored here.
+        </p>
+        <button onclick="startFreshProjectApplication()" class="mt-2 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#6D001A] text-white text-xs font-semibold hover:bg-[#520013] transition shadow-xs cursor-pointer">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Start New Application</span>
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  listContainer.innerHTML = drafts.map(d => {
+    const stepNum = d.step || 1;
+    const stepName = STEP_TITLES[stepNum] || 'Application Setup';
+    const pct = Math.round((stepNum / 6) * 100);
+    const dateFormatted = d.savedAt ? new Date(d.savedAt).toLocaleString(undefined, {
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    }) : 'Recently';
+
+    return `
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+        <div class="space-y-4">
+          
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#6D001A]/10 text-[#6D001A] mb-1.5">
+                Draft Application
+              </span>
+              <h3 class="text-base font-bold text-slate-900 truncate group-hover:text-[#6D001A] transition-colors" title="${d.projectName || 'Untitled'}">
+                ${d.projectName || 'Untitled Project'}
+              </h3>
+              <p class="text-xs text-slate-500 truncate mt-0.5">${d.developer || 'Developer unassigned'} • ${d.microMarket || 'Hyderabad'}</p>
+            </div>
+            <button onclick="deleteSavedDraft('${d.id}', event)" title="Delete Draft"
+              class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition cursor-pointer shrink-0">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="space-y-1.5 pt-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-700">Section ${stepNum}: ${stepName}</span>
+              <span class="font-mono text-slate-400 font-bold">${pct}%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+              <div class="bg-[#6D001A] h-1.5 rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-1 text-[11px] text-slate-400">
+            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Saved ${dateFormatted}</span>
+          </div>
+
+        </div>
+
+        <div class="pt-5 mt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+          <button onclick="resumeDraft('${d.id}')"
+            class="w-full py-2.5 px-4 rounded-xl bg-[#6D001A] hover:bg-[#520013] text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
+            <span>Continue Application</span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+
+      </div>
+    `;
+  }).join('');
+}

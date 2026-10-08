@@ -43,6 +43,7 @@ const VIEW_NAMES = [
   'project-demand',
   'demand-trends',
   'projects',
+  'saved-drafts',
   'add-project',
   'rera-compliance',
   'pending-review',
@@ -59,6 +60,7 @@ const ALL_SIDEBAR_BTN_IDS = [
   'side-btn-project-demand',
   'side-btn-demand-trends',
   'side-btn-projects',
+  'side-btn-saved-drafts',
   'side-btn-add-project',
   'side-btn-rera-compliance',
   'side-btn-pending-review',
@@ -151,6 +153,8 @@ function switchView(viewName, isFromSearch = false) {
     if (typeof renderDemandTrendsPage === 'function') renderDemandTrendsPage();
   } else if (viewName === 'projects') {
     renderProjectsRegistry();
+  } else if (viewName === 'saved-drafts') {
+    if (typeof renderSavedDraftsView === 'function') renderSavedDraftsView();
   } else if (viewName === 'add-project') {
     if (typeof openAddProjectModal === 'function') openAddProjectModal();
   } else if (viewName === 'rera-compliance') {
@@ -182,6 +186,7 @@ async function loadDashboardData() {
       loadSearchIntelligenceData(),
       loadAudienceData()
     ]);
+    if (typeof updateSidebarDraftCount === 'function') updateSidebarDraftCount();
     allFailed = results.every(r => r.status === 'rejected');
 
     if (!allFailed) {
