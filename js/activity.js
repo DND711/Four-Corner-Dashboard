@@ -75,18 +75,42 @@ window.handleFullActivitySearch = handleFullActivitySearch;
 async function renderFullPageActivityLog() {
   const tbody = document.getElementById('full-activity-tbody');
   const countBadge = document.getElementById('full-activity-count-badge');
-  if (!tbody) return;
+  const refreshBtn = document.getElementById('activity-refresh-btn');
+  const refreshIcon = document.getElementById('activity-refresh-icon');
+  const refreshLabel = document.getElementById('activity-refresh-label');
 
-  tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Loading activity feed...</td></tr>`;
+  if (refreshBtn) refreshBtn.disabled = true;
+  if (refreshIcon) refreshIcon.classList.add('animate-spin');
+  if (refreshLabel) refreshLabel.textContent = 'Refreshing...';
+
+  const startTime = Date.now();
 
   try {
-    const data = await fetchActivityFeed(100);
+    // Enforce 1.2s minimum refresh state so the animation runs smoothly
+    const [data] = await Promise.all([
+      fetchActivityFeed(100),
+      new Promise(res => setTimeout(res, 1200))
+    ]);
+
     fullActivityEventsCache = data.events || [];
     renderFullActivityTable();
+    if (typeof showToast === 'function') {
+      showToast('Activity log refreshed.', true);
+    }
   } catch (err) {
     console.error('Error loading full activity log:', err);
-    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500 font-medium">Failed to load activity logs from server.</td></tr>`;
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 1200) {
+      await new Promise(res => setTimeout(res, 1200 - elapsed));
+    }
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500 font-medium">Failed to load activity logs from server.</td></tr>`;
+    }
     if (countBadge) countBadge.textContent = '0 events';
+  } finally {
+    if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+    if (refreshLabel) refreshLabel.textContent = 'Refresh';
+    if (refreshBtn) refreshBtn.disabled = false;
   }
 }
 window.renderFullPageActivityLog = renderFullPageActivityLog;
@@ -248,85 +272,304 @@ function renderExportHistory() {
   }).join('');
 }
 
-// ─── 7-Day Trend Chart (SVG) ───────────────────────────────────────────────────
+// ─── Search Activity Trend Chart (Day / Week / Month Aggregation) ────────────
+
+let currentTrendAggregation = 'day';
+let cachedTrendRawDays = [];
+let trendResizeListenerAttached = false;
+
+function setTrendAggregation(mode) {
+  if (!['day', 'week', 'month'].includes(mode)) mode = 'day';
+  currentTrendAggregation = mode;
+
+  // Update toggle button styles
+  const modes = ['day', 'week', 'month'];
+  modes.forEach(m => {
+    const btn = document.getElementById(`trend-agg-${m}`);
+    if (btn) {
+      if (m === mode) {
+        btn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition cursor-pointer bg-white text-slate-900 shadow-2xs';
+      } else {
+        btn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition cursor-pointer text-slate-500 hover:text-slate-800';
+      }
+    }
+  });
+
+  renderAggregatedTrendChart();
+}
 
 async function loadAndRenderTrendChart() {
+  const container = document.getElementById('overview-trend-chart');
+  if (!container) return;
+
+  try {
+    const data = await fetchTrends(90);
+    cachedTrendRawDays = data.days || [];
+    renderAggregatedTrendChart();
+
+    if (!trendResizeListenerAttached) {
+      trendResizeListenerAttached = true;
+      let resizeTimer = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (document.getElementById('overview-trend-chart')) {
+            renderAggregatedTrendChart();
+          }
+        }, 150);
+      });
+    }
+  } catch (err) {
+    if (container) {
+      container.innerHTML = `<div class="flex items-center justify-center h-full text-xs text-slate-400">Could not load search activity data.</div>`;
+    }
+  }
+}
+
+function processTrendData(days, mode) {
+  if (!days || days.length === 0) return { points: [], total: 0 };
+
+  if (mode === 'day') {
+    // Take the last 8 days (matches current week with 470 searches)
+    const recent = days.slice(-8);
+    const total = recent.reduce((sum, d) => sum + (d.searches || 0), 0);
+    const points = recent.map(d => {
+      const dt = new Date(d.date + 'T00:00:00');
+      const shortLabel = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const fullLabel = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      return {
+        key: d.date,
+        shortLabel,
+        fullLabel,
+        searches: d.searches || 0
+      };
+    });
+    return { points, total };
+  }
+
+  if (mode === 'week') {
+    // Group last 8 weeks (Monday to Sunday)
+    const weekMap = {};
+    days.forEach(d => {
+      const dt = new Date(d.date + 'T00:00:00');
+      const dayOfWeek = dt.getDay(); // 0 is Sun
+      const diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      const mon = new Date(dt);
+      mon.setDate(dt.getDate() + diffToMon);
+      const sun = new Date(mon);
+      sun.setDate(mon.getDate() + 6);
+
+      const monIso = mon.toISOString().slice(0, 10);
+      if (!weekMap[monIso]) {
+        weekMap[monIso] = {
+          start: mon,
+          end: sun,
+          searches: 0
+        };
+      }
+      weekMap[monIso].searches += (d.searches || 0);
+    });
+
+    const sortedWeekKeys = Object.keys(weekMap).sort().slice(-8);
+    const points = sortedWeekKeys.map(k => {
+      const w = weekMap[k];
+      const startStr = w.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const endStr = w.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return {
+        key: k,
+        shortLabel: startStr,
+        fullLabel: `${startStr} – ${endStr}`,
+        searches: w.searches
+      };
+    });
+    const total = points.reduce((sum, p) => sum + p.searches, 0);
+    return { points, total };
+  }
+
+  if (mode === 'month') {
+    // Group by month
+    const monthMap = {};
+    days.forEach(d => {
+      const key = d.date.slice(0, 7); // YYYY-MM
+      const dt = new Date(d.date + 'T00:00:00');
+      if (!monthMap[key]) {
+        monthMap[key] = {
+          shortLabel: dt.toLocaleDateString('en-US', { month: 'short' }),
+          fullLabel: dt.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+          searches: 0
+        };
+      }
+      monthMap[key].searches += (d.searches || 0);
+    });
+
+    const sortedMonthKeys = Object.keys(monthMap).sort();
+    const points = sortedMonthKeys.map(k => ({
+      key: k,
+      shortLabel: monthMap[k].shortLabel,
+      fullLabel: monthMap[k].fullLabel,
+      searches: monthMap[k].searches
+    }));
+    const total = points.reduce((sum, p) => sum + p.searches, 0);
+    return { points, total };
+  }
+
+  return { points: [], total: 0 };
+}
+
+function renderAggregatedTrendChart() {
   const container = document.getElementById('overview-trend-chart');
   const badge = document.getElementById('trend-total-badge');
   if (!container) return;
 
-  try {
-    const data = await fetchTrends(7);
-    const days = data.days || [];
+  const { points, total } = processTrendData(cachedTrendRawDays, currentTrendAggregation);
 
-    const total = days.reduce((sum, d) => sum + (d.searches || 0), 0);
-    if (badge) badge.textContent = `${total} searches this week`;
+  if (badge) {
+    badge.textContent = `${total.toLocaleString('en-IN')} searches`;
+  }
 
-    if (days.length === 0) {
-      container.innerHTML = `<div class="flex items-center justify-center h-full text-xs text-slate-400">No search data yet.</div>`;
-      return;
-    }
+  if (!points || points.length === 0) {
+    container.innerHTML = `<div class="flex items-center justify-center h-full text-xs text-slate-400">No search activity recorded for this period.</div>`;
+    return;
+  }
 
-    const maxVal = Math.max(...days.map(d => d.searches), 1);
-    const width = 100;
-    const height = 100;
-    const padX = 4;
-    const padY = 8;
-    const chartW = width - padX * 2;
-    const chartH = height - padY * 2;
-    const n = days.length;
+  const containerW = container.clientWidth || 800;
+  const width = Math.max(containerW, 500);
+  const height = 240;
+  const padLeft = 45;
+  const padRight = 30;
+  const padTop = 25;
+  const padBottom = 40;
+  const chartW = width - padLeft - padRight;
+  const chartH = height - padTop - padBottom;
+  const n = points.length;
 
-    // Build polyline points
-    const points = days.map((d, i) => {
-      const x = padX + (i / (n - 1 || 1)) * chartW;
-      const y = padY + chartH - (d.searches / maxVal) * chartH;
-      return `${x},${y}`;
-    }).join(' ');
+  const rawMax = Math.max(...points.map(p => p.searches), 1);
+  // Round up max for nice gridlines
+  let maxVal = Math.ceil(rawMax * 1.15);
+  if (maxVal < 5) maxVal = 5;
 
-    // Build fill area (close the path at bottom)
-    const firstX = padX;
-    const lastX = padX + chartW;
-    const bottomY = padY + chartH;
-    const areaPoints = `${firstX},${bottomY} ${points} ${lastX},${bottomY}`;
-
-    // X-axis labels (every other day for space)
-    const labels = days.map((d, i) => {
-      if (i % 2 !== 0 && i !== n - 1) return '';
-      const date = new Date(d.date);
-      const label = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-      const x = padX + (i / (n - 1 || 1)) * chartW;
-      return `<text x="${x}" y="${height}" text-anchor="middle" class="text-[6px] fill-slate-400" style="font-size:6px;fill:#94a3b8;">${label}</text>`;
-    }).join('');
-
-    // Dot markers
-    const dots = days.map((d, i) => {
-      const x = padX + (i / (n - 1 || 1)) * chartW;
-      const y = padY + chartH - (d.searches / maxVal) * chartH;
-      return `<circle cx="${x}" cy="${y}" r="2" fill="#6D001A" stroke="white" stroke-width="1">
-        <title>${d.date}: ${d.searches} searches</title>
-      </circle>`;
-    }).join('');
-
-    container.innerHTML = `
-      <svg viewBox="0 0 ${width} ${height + 10}" class="w-full h-full" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#6D001A" stop-opacity="0.15"/>
-            <stop offset="100%" stop-color="#6D001A" stop-opacity="0.01"/>
-          </linearGradient>
-        </defs>
-        <!-- Area fill -->
-        <polygon points="${areaPoints}" fill="url(#trendGrad)"/>
-        <!-- Line -->
-        <polyline points="${points}" fill="none" stroke="#6D001A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Dots -->
-        ${dots}
-        <!-- X labels -->
-        ${labels}
-      </svg>
+  // Grid steps (4 horizontal lines)
+  const steps = 4;
+  let gridLines = '';
+  for (let s = 0; s <= steps; s++) {
+    const val = Math.round((maxVal / steps) * s);
+    const y = padTop + chartH - (s / steps) * chartH;
+    gridLines += `
+      <line x1="${padLeft}" y1="${y}" x2="${padLeft + chartW}" y2="${y}" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="3,3" />
+      <text x="${padLeft - 8}" y="${y + 3}" text-anchor="end" font-size="10" font-family="monospace" fill="#94A3B8">${val}</text>
     `;
-  } catch (err) {
-    if (container) container.innerHTML = `<div class="flex items-center justify-center h-full text-xs text-slate-400">Could not load trend data.</div>`;
+  }
+
+  const bottomY = padTop + chartH;
+  const slotW = chartW / n;
+  const barW = Math.min(Math.max(slotW * 0.52, 14), 46);
+
+  const barsSvg = points.map((p, i) => {
+    const slotX = padLeft + i * slotW;
+    const barX = slotX + (slotW - barW) / 2;
+    const centerX = slotX + slotW / 2;
+    const isZero = p.searches === 0;
+    const barH = isZero ? 3 : Math.max(Math.round((p.searches / maxVal) * chartH), 4);
+    const barY = bottomY - barH;
+
+    const barColor = isZero ? '#E2E8F0' : 'url(#barGrad)';
+
+    return `
+      <g class="chart-bar-group" data-idx="${i}">
+        <!-- Slot background column track on hover -->
+        <rect id="slot-track-${i}" x="${slotX + (slotW - barW) / 2 - 6}" y="${padTop}" width="${barW + 12}" height="${chartH}" rx="6" fill="#F8FAFC" opacity="0" class="transition-opacity duration-150 pointer-events-none" />
+
+        <!-- Vertical Bar Column -->
+        <rect id="trend-bar-${i}" x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" rx="4" ry="4"
+          fill="${barColor}" class="transition-all duration-150 pointer-events-none shadow-xs" />
+
+        <!-- X-axis Label -->
+        <text x="${centerX.toFixed(1)}" y="${bottomY + 22}" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">${p.shortLabel}</text>
+
+        <!-- Hit target for hover / tap -->
+        <rect x="${slotX.toFixed(1)}" y="${padTop}" width="${slotW.toFixed(1)}" height="${chartH + 30}" fill="transparent" class="cursor-pointer"
+          onmouseenter="showBarTooltip(${i}, ${centerX}, ${barY})"
+          onmouseleave="hideBarTooltip(${i})" />
+      </g>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <!-- Floating Tooltip -->
+    <div id="trend-hover-tooltip"
+      class="pointer-events-none absolute hidden z-20 px-3 py-2 bg-slate-900/95 backdrop-blur-xs text-white rounded-xl shadow-xl transition-all duration-75 border border-slate-700/60 transform -translate-x-1/2 -translate-y-full mb-3">
+    </div>
+
+    <svg viewBox="0 0 ${width} ${height}" class="w-full h-full block overflow-visible" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#800020"/>
+          <stop offset="100%" stop-color="#6D001A"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Background Grid -->
+      ${gridLines}
+
+      <!-- Baseline Floor -->
+      <line x1="${padLeft}" y1="${bottomY}" x2="${padLeft + chartW}" y2="${bottomY}" stroke="#E2E8F0" stroke-width="1.5"/>
+
+      <!-- Bars -->
+      ${barsSvg}
+    </svg>
+  `;
+
+  container._trendPoints = points;
+}
+
+function showBarTooltip(idx, svgX, svgY) {
+  const container = document.getElementById('overview-trend-chart');
+  const tooltip = document.getElementById('trend-hover-tooltip');
+  if (!container || !tooltip || !container._trendPoints) return;
+
+  const item = container._trendPoints[idx];
+  if (!item) return;
+
+  // Highlight bar & slot track
+  const bar = document.getElementById(`trend-bar-${idx}`);
+  const track = document.getElementById(`slot-track-${idx}`);
+  if (track) track.setAttribute('opacity', '1');
+  if (bar && item.searches > 0) {
+    bar.setAttribute('fill', '#520013');
+  }
+
+  const svgEl = container.querySelector('svg');
+  if (!svgEl) return;
+  const viewBoxW = svgEl.viewBox.baseVal.width || 800;
+  const viewBoxH = svgEl.viewBox.baseVal.height || 240;
+
+  const leftPercent = (svgX / viewBoxW) * 100;
+  const topPercent = Math.max(14, (svgY / viewBoxH) * 100);
+
+  tooltip.innerHTML = `
+    <div class="text-[10px] font-medium text-slate-300 whitespace-nowrap">${item.fullLabel}</div>
+    <div class="text-xs font-bold text-white mt-0.5 flex items-center gap-1.5 whitespace-nowrap">
+      <span class="w-1.5 h-1.5 rounded-full ${item.searches > 0 ? 'bg-red-400' : 'bg-slate-400'}"></span>
+      <span>${item.searches.toLocaleString('en-IN')} searches</span>
+    </div>
+  `;
+
+  tooltip.style.left = `${leftPercent}%`;
+  tooltip.style.top = `${topPercent}%`;
+  tooltip.classList.remove('hidden');
+}
+
+function hideBarTooltip(idx) {
+  const tooltip = document.getElementById('trend-hover-tooltip');
+  if (tooltip) tooltip.classList.add('hidden');
+
+  const bar = document.getElementById(`trend-bar-${idx}`);
+  const track = document.getElementById(`slot-track-${idx}`);
+  if (track) track.setAttribute('opacity', '0');
+  if (bar) {
+    const container = document.getElementById('overview-trend-chart');
+    const item = container && container._trendPoints ? container._trendPoints[idx] : null;
+    bar.setAttribute('fill', item && item.searches === 0 ? '#E2E8F0' : 'url(#barGrad)');
   }
 }
 

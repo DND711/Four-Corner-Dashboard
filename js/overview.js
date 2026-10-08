@@ -20,9 +20,18 @@ function renderOverview() {
   if (kpiProjects) {
     kpiProjects.textContent = `${s.verified_projects} / ${s.total_projects}`;
   }
-  const kpiPending = document.getElementById('kpi-pending-verification');
-  if (kpiPending) {
-    kpiPending.textContent = s.pending_verification > 0 ? `${s.pending_verification} pending review` : 'All verified';
+  const kpiProjectsSub = document.getElementById('kpi-verified-projects-sub');
+  if (kpiProjectsSub) {
+    kpiProjectsSub.textContent = `Out of ${s.total_projects} total registered`;
+  }
+
+  const kpiPendingVal = document.getElementById('kpi-pending-review-val');
+  if (kpiPendingVal) {
+    kpiPendingVal.textContent = s.pending_verification;
+  }
+  const kpiPendingSub = document.getElementById('kpi-pending-review-sub');
+  if (kpiPendingSub) {
+    kpiPendingSub.textContent = s.pending_verification > 0 ? `${s.pending_verification} awaiting review →` : 'All projects verified';
   }
 
   const kpiSearches = document.getElementById('kpi-total-searches');
@@ -33,15 +42,6 @@ function renderOverview() {
   const kpiBuyers = document.getElementById('kpi-registered-buyers');
   if (kpiBuyers) {
     kpiBuyers.textContent = `${s.active_search_users} / ${s.total_registered_users}`;
-  }
-
-  const kpiInventory = document.getElementById('kpi-inventory-val');
-  if (kpiInventory) {
-    kpiInventory.textContent = `₹${s.total_inventory_val_cr} Cr`;
-  }
-  const kpiUnits = document.getElementById('kpi-total-units');
-  if (kpiUnits) {
-    kpiUnits.textContent = `${Number(s.total_units).toLocaleString()} units`;
   }
 
   // 2. Micro-Market Demand Breakdown

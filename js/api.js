@@ -86,7 +86,7 @@ async function fetchProjectLeads(projectName) {
   return await res.json();
 }
 
-async function fetchTrends(days = 7) {
+async function fetchTrends(days = 90) {
   const res = await fetch(`${API_BASE}/api/v1/analytics/trends?days=${days}`);
   if (!res.ok) throw new Error(`HTTP error ${res.status}`);
   return await res.json();
